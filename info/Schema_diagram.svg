@@ -1,0 +1,223 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 850">
+  <!-- White Background -->
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  
+  <defs>
+    <style>
+      .table-header { fill: #3498db; }
+      .table-body { fill: #ffffff; stroke: #3498db; stroke-width: 2; }
+      .header-text { fill: white; font-family: Arial, sans-serif; font-size: 13px; font-weight: bold; }
+      .field-text { fill: #2c3e50; font-family: Arial, sans-serif; font-size: 11px; }
+      .pk { fill: #e74c3c; font-size: 9px; font-weight: bold; }
+      .fk { fill: #2980b9; font-size: 9px; font-weight: bold; }
+      .line { stroke: #7f8c8d; stroke-width: 1.5; fill: none; }
+      .title { font-family: Arial, sans-serif; font-size: 22px; font-weight: bold; fill: #2c3e50; }
+      .subtitle { font-family: Arial, sans-serif; font-size: 11px; fill: #95a5a6; }
+      .embed-header { fill: #27ae60; }
+      .embed-body { fill: #f0fff0; stroke: #27ae60; stroke-width: 1.5; }
+    </style>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#7f8c8d"/>
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="550" y="32" text-anchor="middle" class="title">AI Learning Assistant - Database Schema</text>
+  <text x="550" y="50" text-anchor="middle" class="subtitle">MongoDB Collections &amp; Relationships (MERN Stack)</text>
+
+  <!-- ============ ROW 1: USER (Center) ============ -->
+  <g transform="translate(440, 70)">
+    <rect x="0" y="0" width="170" height="28" rx="4" class="table-header"/>
+    <text x="85" y="19" text-anchor="middle" class="header-text">USER</text>
+    <rect x="0" y="28" width="170" height="130" class="table-body"/>
+    <text x="10" y="48" class="field-text"><tspan class="pk">PK</tspan> _id: ObjectId</text>
+    <text x="10" y="65" class="field-text">email: String</text>
+    <text x="10" y="82" class="field-text">password: String</text>
+    <text x="10" y="99" class="field-text">name: String</text>
+    <text x="10" y="116" class="field-text">profilePicture: String</text>
+    <text x="10" y="133" class="field-text">createdAt: Date</text>
+    <text x="10" y="150" class="field-text">updatedAt: Date</text>
+  </g>
+
+  <!-- ============ ROW 2: DOCUMENT, LEARNING_SESSION, ACTIVITY ============ -->
+  
+  <!-- DOCUMENT -->
+  <g transform="translate(60, 280)">
+    <rect x="0" y="0" width="170" height="28" rx="4" class="table-header"/>
+    <text x="85" y="19" text-anchor="middle" class="header-text">DOCUMENT</text>
+    <rect x="0" y="28" width="170" height="185" class="table-body"/>
+    <text x="10" y="48" class="field-text"><tspan class="pk">PK</tspan> _id: ObjectId</text>
+    <text x="10" y="65" class="field-text"><tspan class="fk">FK</tspan> userId: ObjectId</text>
+    <text x="10" y="82" class="field-text">title: String</text>
+    <text x="10" y="99" class="field-text">fileName: String</text>
+    <text x="10" y="116" class="field-text">fileUrl: String</text>
+    <text x="10" y="133" class="field-text">fileSize: Number</text>
+    <text x="10" y="150" class="field-text">extractedText: String</text>
+    <text x="10" y="167" class="field-text">summary: String</text>
+    <text x="10" y="184" class="field-text">isFavorite: Boolean</text>
+    <text x="10" y="201" class="field-text">uploadedAt: Date</text>
+  </g>
+
+  <!-- LEARNING_SESSION -->
+  <g transform="translate(440, 280)">
+    <rect x="0" y="0" width="190" height="28" rx="4" class="table-header"/>
+    <text x="95" y="19" text-anchor="middle" class="header-text">LEARNING_SESSION</text>
+    <rect x="0" y="28" width="190" height="165" class="table-body"/>
+    <text x="10" y="48" class="field-text"><tspan class="pk">PK</tspan> _id: ObjectId</text>
+    <text x="10" y="65" class="field-text"><tspan class="fk">FK</tspan> userId: ObjectId</text>
+    <text x="10" y="82" class="field-text"><tspan class="fk">FK</tspan> documentId: ObjectId</text>
+    <text x="10" y="99" class="field-text">title: String</text>
+    <text x="10" y="116" class="field-text">messages: [Message]</text>
+    <text x="10" y="133" class="field-text">sessionType: String</text>
+    <text x="10" y="150" class="field-text">createdAt: Date</text>
+    <text x="10" y="167" class="field-text">updatedAt: Date</text>
+  </g>
+
+  <!-- ACTIVITY -->
+  <g transform="translate(850, 280)">
+    <rect x="0" y="0" width="170" height="28" rx="4" class="table-header"/>
+    <text x="85" y="19" text-anchor="middle" class="header-text">ACTIVITY</text>
+    <rect x="0" y="28" width="170" height="130" class="table-body"/>
+    <text x="10" y="48" class="field-text"><tspan class="pk">PK</tspan> _id: ObjectId</text>
+    <text x="10" y="65" class="field-text"><tspan class="fk">FK</tspan> userId: ObjectId</text>
+    <text x="10" y="82" class="field-text">activityType: String</text>
+    <text x="10" y="99" class="field-text">referenceId: ObjectId</text>
+    <text x="10" y="116" class="field-text">metadata: Object</text>
+    <text x="10" y="133" class="field-text">createdAt: Date</text>
+  </g>
+
+  <!-- ============ ROW 3: FLASHCARD, QUIZ, QUIZ_RESULT ============ -->
+  
+  <!-- FLASHCARD -->
+  <g transform="translate(60, 560)">
+    <rect x="0" y="0" width="170" height="28" rx="4" class="table-header"/>
+    <text x="85" y="19" text-anchor="middle" class="header-text">FLASHCARD</text>
+    <rect x="0" y="28" width="170" height="175" class="table-body"/>
+    <text x="10" y="48" class="field-text"><tspan class="pk">PK</tspan> _id: ObjectId</text>
+    <text x="10" y="65" class="field-text"><tspan class="fk">FK</tspan> userId: ObjectId</text>
+    <text x="10" y="82" class="field-text"><tspan class="fk">FK</tspan> documentId: ObjectId</text>
+    <text x="10" y="99" class="field-text">front: String</text>
+    <text x="10" y="116" class="field-text">back: String</text>
+    <text x="10" y="133" class="field-text">isFavorite: Boolean</text>
+    <text x="10" y="150" class="field-text">timesReviewed: Number</text>
+    <text x="10" y="167" class="field-text">lastReviewedAt: Date</text>
+    <text x="10" y="184" class="field-text">createdAt: Date</text>
+  </g>
+
+  <!-- QUIZ -->
+  <g transform="translate(300, 560)">
+    <rect x="0" y="0" width="170" height="28" rx="4" class="table-header"/>
+    <text x="85" y="19" text-anchor="middle" class="header-text">QUIZ</text>
+    <rect x="0" y="28" width="170" height="130" class="table-body"/>
+    <text x="10" y="48" class="field-text"><tspan class="pk">PK</tspan> _id: ObjectId</text>
+    <text x="10" y="65" class="field-text"><tspan class="fk">FK</tspan> userId: ObjectId</text>
+    <text x="10" y="82" class="field-text"><tspan class="fk">FK</tspan> documentId: ObjectId</text>
+    <text x="10" y="99" class="field-text">title: String</text>
+    <text x="10" y="116" class="field-text">questions: [Question]</text>
+    <text x="10" y="133" class="field-text">createdAt: Date</text>
+  </g>
+
+  <!-- QUIZ_RESULT -->
+  <g transform="translate(540, 560)">
+    <rect x="0" y="0" width="170" height="28" rx="4" class="table-header"/>
+    <text x="85" y="19" text-anchor="middle" class="header-text">QUIZ_RESULT</text>
+    <rect x="0" y="28" width="170" height="165" class="table-body"/>
+    <text x="10" y="48" class="field-text"><tspan class="pk">PK</tspan> _id: ObjectId</text>
+    <text x="10" y="65" class="field-text"><tspan class="fk">FK</tspan> userId: ObjectId</text>
+    <text x="10" y="82" class="field-text"><tspan class="fk">FK</tspan> quizId: ObjectId</text>
+    <text x="10" y="99" class="field-text">answers: [Answer]</text>
+    <text x="10" y="116" class="field-text">score: Number</text>
+    <text x="10" y="133" class="field-text">totalQuestions: Number</text>
+    <text x="10" y="150" class="field-text">correctAnswers: Number</text>
+    <text x="10" y="167" class="field-text">completedAt: Date</text>
+  </g>
+
+  <!-- ============ EMBEDDED SCHEMAS ============ -->
+  
+  <!-- Message -->
+  <g transform="translate(780, 560)">
+    <rect x="0" y="0" width="140" height="24" rx="3" class="embed-header"/>
+    <text x="70" y="16" text-anchor="middle" class="header-text" style="font-size:11px;">Message</text>
+    <rect x="0" y="24" width="140" height="65" class="embed-body"/>
+    <text x="8" y="42" class="field-text" style="font-size:10px;">role: String</text>
+    <text x="8" y="57" class="field-text" style="font-size:10px;">content: String</text>
+    <text x="8" y="72" class="field-text" style="font-size:10px;">timestamp: Date</text>
+  </g>
+
+  <!-- Question -->
+  <g transform="translate(780, 660)">
+    <rect x="0" y="0" width="140" height="24" rx="3" fill="#e67e22"/>
+    <text x="70" y="16" text-anchor="middle" class="header-text" style="font-size:11px;">Question</text>
+    <rect x="0" y="24" width="140" height="80" fill="#fff8f0" stroke="#e67e22" stroke-width="1.5"/>
+    <text x="8" y="42" class="field-text" style="font-size:10px;">question: String</text>
+    <text x="8" y="57" class="field-text" style="font-size:10px;">options: [String]</text>
+    <text x="8" y="72" class="field-text" style="font-size:10px;">correctAnswer: Number</text>
+    <text x="8" y="87" class="field-text" style="font-size:10px;">explanation: String</text>
+  </g>
+
+  <!-- Answer -->
+  <g transform="translate(940, 560)">
+    <rect x="0" y="0" width="140" height="24" rx="3" fill="#9b59b6"/>
+    <text x="70" y="16" text-anchor="middle" class="header-text" style="font-size:11px;">Answer</text>
+    <rect x="0" y="24" width="140" height="65" fill="#faf5ff" stroke="#9b59b6" stroke-width="1.5"/>
+    <text x="8" y="42" class="field-text" style="font-size:10px;">questionIndex: Number</text>
+    <text x="8" y="57" class="field-text" style="font-size:10px;">selectedAnswer: Number</text>
+    <text x="8" y="72" class="field-text" style="font-size:10px;">isCorrect: Boolean</text>
+  </g>
+
+  <!-- ============ RELATIONSHIP LINES ============ -->
+  
+  <!-- USER → DOCUMENT (left side, goes down and left) -->
+  <path d="M 440 145 L 380 145 L 380 240 L 145 240 L 145 280" class="line" marker-end="url(#arrowhead)"/>
+  <text x="350" y="138" class="field-text" style="font-size:9px;fill:#7f8c8d;">1:N</text>
+  
+  <!-- USER → LEARNING_SESSION (straight down) -->
+  <path d="M 525 228 L 525 280" class="line" marker-end="url(#arrowhead)"/>
+  <text x="530" y="260" class="field-text" style="font-size:9px;fill:#7f8c8d;">1:N</text>
+  
+  <!-- USER → ACTIVITY (right side, goes down and right) -->
+  <path d="M 610 145 L 700 145 L 700 240 L 935 240 L 935 280" class="line" marker-end="url(#arrowhead)"/>
+  <text x="710" y="138" class="field-text" style="font-size:9px;fill:#7f8c8d;">1:N</text>
+  
+  <!-- USER → FLASHCARD (far left path) -->
+  <path d="M 440 170 L 30 170 L 30 620 L 60 620" class="line" marker-end="url(#arrowhead)"/>
+  <text x="35" y="400" class="field-text" style="font-size:9px;fill:#7f8c8d;">1:N</text>
+  
+  <!-- USER → QUIZ (left-center path) -->
+  <path d="M 475 228 L 475 250 L 270 250 L 270 620 L 300 620" class="line" marker-end="url(#arrowhead)"/>
+  <text x="275" y="450" class="field-text" style="font-size:9px;fill:#7f8c8d;">1:N</text>
+  
+  <!-- USER → QUIZ_RESULT (right-center path) -->
+  <path d="M 575 228 L 575 250 L 730 250 L 730 620 L 710 620" class="line" marker-end="url(#arrowhead)"/>
+  <text x="735" y="450" class="field-text" style="font-size:9px;fill:#7f8c8d;">1:N</text>
+  
+  <!-- DOCUMENT → LEARNING_SESSION -->
+  <path d="M 230 350 L 350 350 L 350 350 L 440 350" class="line" marker-end="url(#arrowhead)"/>
+  <text x="330" y="343" class="field-text" style="font-size:9px;fill:#7f8c8d;">1:N</text>
+  
+  <!-- DOCUMENT → FLASHCARD (straight down) -->
+  <path d="M 120 493 L 120 560" class="line" marker-end="url(#arrowhead)"/>
+  <text x="125" y="530" class="field-text" style="font-size:9px;fill:#7f8c8d;">1:N</text>
+  
+  <!-- DOCUMENT → QUIZ -->
+  <path d="M 180 493 L 180 520 L 385 520 L 385 560" class="line" marker-end="url(#arrowhead)"/>
+  <text x="280" y="513" class="field-text" style="font-size:9px;fill:#7f8c8d;">1:N</text>
+  
+  <!-- QUIZ → QUIZ_RESULT -->
+  <path d="M 470 625 L 540 625" class="line" marker-end="url(#arrowhead)"/>
+  <text x="495" y="618" class="field-text" style="font-size:9px;fill:#7f8c8d;">1:N</text>
+
+  <!-- ============ LEGEND ============ -->
+  <g transform="translate(60, 800)">
+    <text x="0" y="0" class="field-text" style="font-weight:bold;font-size:12px;">Legend:</text>
+    <rect x="70" y="-11" width="14" height="14" rx="2" fill="#3498db"/>
+    <text x="90" y="0" class="field-text">Collection</text>
+    <rect x="170" y="-11" width="14" height="14" rx="2" fill="#27ae60"/>
+    <text x="190" y="0" class="field-text">Embedded</text>
+    <text x="270" y="0" class="field-text"><tspan class="pk">PK</tspan> Primary Key</text>
+    <text x="370" y="0" class="field-text"><tspan class="fk">FK</tspan> Foreign Key</text>
+    <line x1="470" y1="-4" x2="510" y2="-4" class="line" marker-end="url(#arrowhead)"/>
+    <text x="520" y="0" class="field-text">1:N Relationship</text>
+  </g>
+
+</svg>

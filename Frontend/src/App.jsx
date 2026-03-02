@@ -1,35 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import NotFoundPage from './pages/NotFoundPage';
+import LoginPages from './pages/Auth/LoginPages';
+import RegisterPages from './pages/Auth/RegisterPages';
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const isAuthenticated = true;
+  const loading = false;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p>Loading ...</p>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={isAuthenticated ? <Navigate to="/dashboard" replace />: <Navigate to="/login" replace />}
+        />
+        <Route path="/login" element={<LoginPages />} />
+        <Route path="/register" element={<RegisterPages />} />
+        
+         <Route element={<ProtectedRoute />}>
+         <Route path="/dashboard" element={<DashboardPage />} />
+         <Route path="/documents" element={<DocumentListPage />} />
+         <Route path="/documents/:id" element={<DocumentDetailPage />} />
+         <Route path="/flashcards" element={<FlashcardsListPage />} />
+         <Route path="/documents/:id/flashcards" element={<FlashcardPage />} />
+         <Route path="/quizzes/:quizId" element={<QuizTakePage />} />
+         <Route path="/quizzes/:quizId/results" element={<QuizResultPage />} />
+         <Route path="/profile" element={<ProfilePage />} />
+         </Route>
+
+
+
+
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

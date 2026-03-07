@@ -2,7 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
-import test from "./models/test.js"
+import authroutes from "./routes/authroutes.js";
+
 dotenv.config();
 
 connectDB();
@@ -12,11 +13,8 @@ const app = express();
 app.use(cors());
 app.use(express.json()); 
 
-app.use("/api/auth", authRoutes); 
+app.use("/api/auth", authroutes); 
 
-app.get("/", (req, res) => {
-  res.send("Server is running");
-});
 
 const PORT = process.env.PORT || 5000;
 
@@ -36,3 +34,7 @@ app.post('/users', async(req,res)=>{
     res.status(500).json({error: error.message});
   } 
 });
+
+
+
+

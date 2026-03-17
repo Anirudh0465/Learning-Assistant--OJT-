@@ -1,0 +1,14 @@
+2026-03-17T16:53:43.121Z [INFO]: Login Attempt: anirudh0465@gmail.com
+2026-03-17T16:53:43.149Z [WARN]: Login failed: user not found (anirudh0465@gmail.com)
+2026-03-17T16:53:47.838Z [INFO]: Login Attempt: anirudh0465@gmail.com
+2026-03-17T16:53:47.860Z [WARN]: Login failed: user not found (anirudh0465@gmail.com)
+2026-03-17T16:53:54.055Z [INFO]: Login Attempt: anirudh0465@gmail.com
+2026-03-17T16:53:54.082Z [WARN]: Login failed: user not found (anirudh0465@gmail.com)
+2026-03-17T16:53:58.644Z [INFO]: Login Attempt: anirudh0465@gmail.com
+2026-03-17T16:53:58.665Z [WARN]: Login failed: user not found (anirudh0465@gmail.com)
+2026-03-17T16:54:14.531Z [INFO]: Signup attempt: anir@gmail.com
+2026-03-17T16:54:14.665Z [INFO]: User Created: 69b987369d426b5b560cbb63
+2026-03-17T16:54:28.945Z [INFO]: Login Attempt: anir@gmail.com
+2026-03-17T16:54:29.032Z [WARN]: Login failed: wrong password (anir@gmail.com)
+2026-03-17T16:54:32.177Z [INFO]: Login Attempt: anir@gmail.com
+2026-03-17T16:54:32.267Z [INFO]: Login Sucessful: 69b987369d426b5b560cbb63

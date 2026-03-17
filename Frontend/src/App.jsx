@@ -16,7 +16,6 @@ const QuizResultPage = () => <div>Quiz Result</div>;
 const ProfilePage = () => <div>Profile</div>;
 
 const App = () => {
-  // Determine if user has token to auto-direct from '/' 
   const isAuthenticated = !!localStorage.getItem('token');
 
   return (

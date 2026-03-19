@@ -12,3 +12,14 @@
 2026-03-17T16:54:29.032Z [WARN]: Login failed: wrong password (anir@gmail.com)
 2026-03-17T16:54:32.177Z [INFO]: Login Attempt: anir@gmail.com
 2026-03-17T16:54:32.267Z [INFO]: Login Sucessful: 69b987369d426b5b560cbb63
+2026-03-18T09:26:18.017Z [INFO]: Server running on port 3400
+2026-03-18T09:27:55.436Z [INFO]: Server running on port 3400
+2026-03-18T09:28:25.561Z [INFO]: Signup attempt: kk22@gmail.com
+2026-03-18T09:28:25.769Z [INFO]: User Created: 69ba70392ed4a479a951d1da
+2026-03-18T09:28:41.932Z [INFO]: Login Attempt: kk22@gmail.com
+2026-03-18T09:28:42.066Z [INFO]: Login Sucessful: 69ba70392ed4a479a951d1da
+2026-03-18T09:56:51.968Z [INFO]: Server running on port 3400
+2026-03-18T09:57:29.419Z [INFO]: Signup attempt: abcd@mail.com
+2026-03-18T09:57:29.818Z [INFO]: User Created: 69ba7709d28efd0120ce87ea
+2026-03-18T09:57:39.450Z [INFO]: Login Attempt: abcd@mail.com
+2026-03-18T09:57:39.733Z [INFO]: Login Sucessful: 69ba7709d28efd0120ce87ea

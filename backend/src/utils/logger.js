@@ -2,6 +2,7 @@ import winston from 'winston';
 
 const  format = winston.format.combine(
     winston.format.timestamp(),
+    winston.format.errors({stack: true}),
     winston.format.printf(({ timestamp, level, message }) => {
         return `${timestamp} [${level.toUpperCase()}]: ${message}`;
     })
@@ -11,7 +12,7 @@ const createLogger = (filename, level = 'info') =>
     winston.createLogger({
         level,
         format,
-        transports:[new winston.transports.File({ filename: `logs/${filename}`}), ],
+        transports:[new winston.transports.File({ filename: `./logs/${filename}`}), ],
     });
 
 export const authLogger = createLogger('auth.log');

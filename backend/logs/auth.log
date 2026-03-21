@@ -23,3 +23,49 @@
 2026-03-18T09:57:29.818Z [INFO]: User Created: 69ba7709d28efd0120ce87ea
 2026-03-18T09:57:39.450Z [INFO]: Login Attempt: abcd@mail.com
 2026-03-18T09:57:39.733Z [INFO]: Login Sucessful: 69ba7709d28efd0120ce87ea
+2026-03-20T18:01:34.357Z [INFO]: Server running on port 3400
+2026-03-20T18:05:28.658Z [INFO]: Login Attempt: abcd@mail.com
+2026-03-20T18:05:28.772Z [WARN]: Login failed (abcd@mail.com)
+2026-03-20T18:05:52.400Z [INFO]: Signup attempt: abcdd@mail.com
+2026-03-20T18:05:52.534Z [INFO]: User Created: 69bd8c8059818dc6d982107d
+2026-03-20T18:06:00.321Z [INFO]: Login Attempt: abcdd@mail.com
+2026-03-20T18:06:00.406Z [INFO]: Login Successful: 69bd8c8059818dc6d982107d
+2026-03-20T18:06:07.314Z [INFO]: Login Attempt: abcdd@mail.com
+2026-03-20T18:06:07.406Z [INFO]: Login Successful: 69bd8c8059818dc6d982107d
+2026-03-20T18:15:20.896Z [INFO]: Server running on port 3400
+2026-03-20T18:16:26.693Z [INFO]: Login Attempt: abcdd@mail.com
+2026-03-20T18:16:26.797Z [WARN]: Login failed (abcdd@mail.com)
+2026-03-20T18:16:31.670Z [INFO]: Login Attempt: abcdd@mail.com
+2026-03-20T18:16:32.002Z [WARN]: Login failed (abcdd@mail.com)
+2026-03-20T18:17:08.601Z [INFO]: Signup attempt: testing@mail.com
+2026-03-20T18:17:08.722Z [INFO]: User Created: 69bd8f24f2b15fcacd1aa85c
+2026-03-20T18:17:14.736Z [INFO]: Login Attempt: testing@mail.com
+2026-03-20T18:17:14.820Z [INFO]: Login Successful: 69bd8f24f2b15fcacd1aa85c
+2026-03-20T18:20:14.352Z [INFO]: Login Attempt: testing@mail.com
+2026-03-20T18:20:14.440Z [WARN]: Login failed (testing@mail.com)
+2026-03-20T18:20:21.723Z [INFO]: Login Attempt: testing@mail.com
+2026-03-20T18:20:21.810Z [WARN]: Login failed (testing@mail.com)
+2026-03-20T18:20:29.882Z [INFO]: Login Attempt: testing@mail.com
+2026-03-20T18:20:29.966Z [WARN]: Login failed (testing@mail.com)
+2026-03-20T18:21:04.759Z [INFO]: Signup attempt: testingd@mail.com
+2026-03-20T18:21:04.882Z [INFO]: User Created: 69bd9010f2b15fcacd1aa863
+2026-03-20T18:21:19.534Z [INFO]: Login Attempt: testingd@mail.com
+2026-03-20T18:21:19.631Z [INFO]: Login Successful: 69bd9010f2b15fcacd1aa863
+2026-03-21T09:42:38.416Z [INFO]: Server running on port 3400
+2026-03-21T09:55:18.958Z [INFO]: Server running on port 3400
+2026-03-21T09:55:44.292Z [INFO]: Login Attempt: testingd@mail.com
+2026-03-21T09:55:44.615Z [INFO]: Login Successful: 69bd9010f2b15fcacd1aa863
+2026-03-21T09:57:24.890Z [INFO]: Server running on port 3400
+2026-03-21T09:57:33.247Z [INFO]: Login Attempt: testingd@mail.com
+2026-03-21T09:57:33.533Z [INFO]: Login Successful: 69bd9010f2b15fcacd1aa863
+2026-03-21T10:03:14.733Z [INFO]: Server running on port 3400
+2026-03-21T10:03:35.659Z [INFO]: Server running on port 3400
+2026-03-21T10:03:41.990Z [INFO]: Login Attempt: testingd@mail.com
+2026-03-21T10:03:42.251Z [INFO]: Login Successful: 69bd9010f2b15fcacd1aa863
+2026-03-21T10:05:35.175Z [INFO]: Server running on port 3400
+2026-03-21T10:05:48.588Z [INFO]: Server running on port 3400
+2026-03-21T10:05:55.769Z [INFO]: Login Attempt: testingd@mail.com
+2026-03-21T10:05:56.071Z [INFO]: Login Successful: 69bd9010f2b15fcacd1aa863
+2026-03-21T10:12:38.410Z [INFO]: Server running on port 3400
+2026-03-21T10:12:55.794Z [INFO]: Login Attempt: testingd@mail.com
+2026-03-21T10:12:56.074Z [INFO]: Login Successful: 69bd9010f2b15fcacd1aa863

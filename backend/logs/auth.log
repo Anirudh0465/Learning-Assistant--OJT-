@@ -23,6 +23,7 @@
 2026-03-18T09:57:29.818Z [INFO]: User Created: 69ba7709d28efd0120ce87ea
 2026-03-18T09:57:39.450Z [INFO]: Login Attempt: abcd@mail.com
 2026-03-18T09:57:39.733Z [INFO]: Login Sucessful: 69ba7709d28efd0120ce87ea
+<<<<<<< Updated upstream
 2026-03-20T18:01:34.357Z [INFO]: Server running on port 3400
 2026-03-20T18:05:28.658Z [INFO]: Login Attempt: abcd@mail.com
 2026-03-20T18:05:28.772Z [WARN]: Login failed (abcd@mail.com)
@@ -69,3 +70,23 @@
 2026-03-21T10:12:38.410Z [INFO]: Server running on port 3400
 2026-03-21T10:12:55.794Z [INFO]: Login Attempt: testingd@mail.com
 2026-03-21T10:12:56.074Z [INFO]: Login Successful: 69bd9010f2b15fcacd1aa863
+=======
+2026-03-19T10:52:26.027Z [INFO]: Server running on port 3400
+2026-03-19T10:52:40.390Z [INFO]: Login Attempt: ayush.945484658@gmail.com
+2026-03-19T10:52:40.624Z [INFO]: Login Sucessful: 69a576e3c9716f82a3905bca
+2026-03-19T11:42:45.298Z [INFO]: Signup attempt: ayush.94548kok4658@gmail.com
+2026-03-19T11:42:45.540Z [INFO]: User Created: 69bbe1357ea699039f43e418
+>>>>>>> Stashed changes
+2026-03-22T18:46:05.005Z [INFO]: Server running on port 3400
+2026-03-22T18:48:12.579Z [INFO]: Server running on port 3400
+2026-03-22T18:48:33.531Z [INFO]: Login Attempt: ayush.9454846458@gmail.com
+2026-03-22T18:48:33.657Z [INFO]: Login Successful: 69a5173cd91393487a5a690c
+2026-03-22T18:48:45.918Z [INFO]: Signup attempt: ayush.9454846sf458@gmail.com
+2026-03-22T18:48:46.280Z [INFO]: User Created: 69c0398eeb44af3d05eac501
+2026-03-22T19:32:47.834Z [INFO]: Server running on port 3400
+2026-03-22T19:32:47.834Z [INFO]: Server running on port 3400
+2026-03-22T19:34:23.063Z [INFO]: Server running on port 3400
+2026-03-22T19:34:23.061Z [INFO]: Server running on port 3400
+2026-03-22T19:34:40.671Z [INFO]: Server running on port 3400
+2026-03-22T19:38:04.481Z [INFO]: Server running on port 3400
+2026-03-22T19:38:04.482Z [INFO]: Server running on port 3400

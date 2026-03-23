@@ -1,4 +1,14 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
+
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url,
+).toString();
 import { 
   Bot, 
   LayoutDashboard, 
@@ -15,11 +25,53 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 const DashboardPage = () => {
-  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
+  
+  const fileInputRef = useRef(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [numPages, setNumPages] = useState(null);
 
   // Retrieve user data to display email, fallback to example if not found
   const user = JSON.parse(localStorage.getItem('user')) || { email: 'you@example.com' };
+
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (file.type !== 'application/pdf') {
+      toast.error('Please upload a PDF file');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      setIsUploading(true);
+      const token = localStorage.getItem('token');
+      
+      const response = await axios.post('http://localhost:3400/api/documents/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}` 
+        }
+      });
+
+      toast.success('Document uploaded successfully!');
+      
+      if (response.data && response.data.fileUrl) {
+        setPdfUrl(response.data.fileUrl);
+      }
+    } catch (error) {
+      console.error('Upload failed:', error);
+      toast.error(error.response?.data?.message || 'Failed to upload document');
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -101,9 +153,20 @@ const DashboardPage = () => {
         <div className="p-8">
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-3xl font-semibold tracking-tight">Dashboard</h1>
-            <button className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-lg font-medium transition-colors shadow-lg shadow-emerald-500/20 shadow-emerald-500/20">
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleFileUpload} 
+              accept=".pdf" 
+              className="hidden" 
+            />
+            <button 
+              onClick={() => fileInputRef.current.click()}
+              disabled={isUploading}
+              className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-lg font-medium transition-colors shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <UploadCloud className="w-5 h-5" />
-              Upload Document
+              {isUploading ? 'Uploading...' : 'Upload Document'}
             </button>
           </div>
 
@@ -171,6 +234,30 @@ const DashboardPage = () => {
               ))}
             </div>
           </div>
+          {/* PDF Viewer Section */}
+          {pdfUrl && (
+            <div className="bg-[#2a2a35] rounded-2xl border border-gray-800/80 overflow-hidden shadow-sm mt-8 p-6 flex flex-col items-center">
+              <h2 className="text-xl font-semibold text-gray-100 mb-4 w-full border-b border-gray-800/80 pb-4">Document Viewer</h2>
+              <div className="w-full max-w-4xl bg-white/5 p-4 rounded-xl flex justify-center overflow-auto max-h-[800px]">
+                <Document 
+                  file={pdfUrl} 
+                  onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+                  className="flex flex-col gap-4"
+                >
+                  {Array.from(new Array(numPages), (el, index) => (
+                    <Page 
+                      key={`page_${index + 1}`} 
+                      pageNumber={index + 1} 
+                      renderTextLayer={false} 
+                      renderAnnotationLayer={false}
+                      className="shadow-lg rounded-md"
+                      width={800}
+                    />
+                  ))}
+                </Document>
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </div>

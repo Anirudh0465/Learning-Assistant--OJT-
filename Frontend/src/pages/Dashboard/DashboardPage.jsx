@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -33,8 +33,32 @@ const DashboardPage = () => {
   const [pdfUrl, setPdfUrl] = useState(null);
   const [numPages, setNumPages] = useState(null);
 
+  const [documents, setDocuments] = useState([]);
+  const [isLoadingDocs, setIsLoadingDocs] = useState(true);
+
   // Retrieve user data to display email, fallback to example if not found
   const user = JSON.parse(localStorage.getItem('user')) || { email: 'you@example.com' };
+
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setIsLoadingDocs(false);
+          return;
+        }
+        const response = await axios.get('http://localhost:3400/api/documents', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setDocuments(response.data);
+      } catch (error) {
+        console.error('Failed to fetch documents:', error);
+      } finally {
+        setIsLoadingDocs(false);
+      }
+    };
+    fetchDocuments();
+  }, []);
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
@@ -61,8 +85,11 @@ const DashboardPage = () => {
 
       toast.success('Document uploaded successfully!');
       
-      if (response.data && response.data.fileUrl) {
-        setPdfUrl(response.data.fileUrl);
+      if (response.data) {
+        if (response.data.fileUrl) {
+          setPdfUrl(response.data.fileUrl);
+        }
+        setDocuments(prev => [response.data, ...prev]);
       }
     } catch (error) {
       console.error('Upload failed:', error);
@@ -210,23 +237,25 @@ const DashboardPage = () => {
             </div>
             
             <div className="flex flex-col">
-              {[
-                { title: 'Document #1: Rules for Writing', type: 'Document', date: 'Aug 3, 2023 ago' },
-                { title: 'Document #1: Immerse in Applon Medicine', type: 'Document', date: 'Aug 3, 2023 ago' },
-                { title: 'Document #2: Request in Quizze 1', type: 'Document', date: 'Aug 3, 2023 ago' },
-                { title: 'Document #2: Preparation Quizze 2', type: 'Document', date: 'Aug 3, 2023 ago' },
-                { title: 'Document #2: Discover Document', type: 'Document', date: 'Aug 3, 2023 ago' },
-              ].map((item, index) => (
-                <div key={index} className="flex items-center justify-between px-6 py-4 border-b border-gray-800/60 hover:bg-[#2d2d39] transition-colors last:border-b-0">
+              {isLoadingDocs ? (
+                <div className="px-6 py-4 text-gray-400 text-sm">Loading documents...</div>
+              ) : documents.length === 0 ? (
+                <div className="px-6 py-4 text-gray-400 text-sm">No documents uploaded yet.</div>
+              ) : documents.map((doc) => (
+                <div key={doc._id} className="flex items-center justify-between px-6 py-4 border-b border-gray-800/60 hover:bg-[#2d2d39] transition-colors last:border-b-0">
                   <div className="flex-1">
-                    <h3 className="text-[15px] font-medium text-gray-200 mb-1">{item.title}</h3>
-                    <p className="text-sm text-gray-500">{item.type}</p>
+                    <h3 className="text-[15px] font-medium text-gray-200 mb-1">{doc.originalName}</h3>
+                    <p className="text-sm text-gray-500">Document</p>
                   </div>
                   <div className="w-48 text-left">
-                    <span className="text-sm text-gray-400">{item.date}</span>
+                    <span className="text-sm text-gray-400">
+                      {new Date(doc.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                    </span>
                   </div>
                   <div>
-                    <button className="bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors border border-emerald-500/20 hover:border-emerald-500">
+                    <button 
+                      onClick={() => setPdfUrl(doc.fileUrl)}
+                      className="bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors border border-emerald-500/20 hover:border-emerald-500">
                       View
                     </button>
                   </div>

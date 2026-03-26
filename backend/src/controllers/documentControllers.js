@@ -23,3 +23,12 @@ export const uploadDocument = async (req,res) => {
         res.status(500).json({message: err.message});
     }
 };
+
+export const getDocuments = async (req, res) => {
+    try {
+        const docs = await Document.find({ userId: req.user.id }).sort({ createdAt: -1 });
+        res.json(docs);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};

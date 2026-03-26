@@ -7,13 +7,13 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 // Stub imports for nested routes if they don't exist yet, to prevent app crash
 import DashboardPage from './pages/Dashboard/DashboardPage';
-const DocumentListPage = () => <div>Documents List</div>;
+import DocumentListPage from './pages/Documents/DocumentListPage';
 const DocumentDetailPage = () => <div>Document Detail</div>;
-const FlashcardsListPage = () => <div>Flashcards List</div>;
-const FlashcardPage = () => <div>Flashcard</div>;
+import FlashcardsListPage from './pages/Flashcards/FlashcardListPage';
+import FlashcardStudyPage from './pages/Flashcards/FlashcardStudyPage';
 const QuizTakePage = () => <div>Quiz Take</div>;
 const QuizResultPage = () => <div>Quiz Result</div>;
-const ProfilePage = () => <div>Profile</div>;
+import ProfilePage from './pages/Profile/ProfilePage';
 
 const App = () => {
   const isAuthenticated = !!localStorage.getItem('token');
@@ -33,7 +33,7 @@ const App = () => {
           <Route path="/documents" element={<DocumentListPage />} />
           <Route path="/documents/:id" element={<DocumentDetailPage />} />
           <Route path="/flashcards" element={<FlashcardsListPage />} />
-          <Route path="/documents/:id/flashcards" element={<FlashcardPage />} />
+          <Route path="/flashcards/:documentId" element={<FlashcardStudyPage />} />
           <Route path="/quizzes/:quizId" element={<QuizTakePage />} />
           <Route path="/quizzes/:quizId/results" element={<QuizResultPage />} />
           <Route path="/profile" element={<ProfilePage />} />

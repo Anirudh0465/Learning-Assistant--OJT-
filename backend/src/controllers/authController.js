@@ -89,3 +89,65 @@ export const login = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const updateProfile = async (req, res) => {
+  try {
+    const { name, email } = req.body;
+    const userId = req.user.id;
+
+    if (!name || !email) {
+      return res.status(400).json({ message: "Name and email are required" });
+    }
+
+    const normalizedEmail = email.toLowerCase();
+    
+    const existingUser = await User.findOne({ email: normalizedEmail, _id: { $ne: userId } });
+    if(existingUser) {
+      return res.status(400).json({ message: "Email already taken by someone else" });
+    }
+
+    const user = await User.findByIdAndUpdate(userId, { name, email: normalizedEmail }, { new: true });
+    
+    if(!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const { password: _, ...userData } = user.toObject();
+    res.json({ user: userData, message: "Profile updated successfully" });
+
+  } catch (error) {
+    errorLogger.error(error);
+    res.status(500).json({ message: "Server error updating profile" });
+  }
+};
+
+export const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user.id;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: "Both current and new passwords are required" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const match = await bcrypt.compare(currentPassword, user.password);
+    if (!match) {
+      return res.status(400).json({ message: "Incorrect current password" });
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedNewPassword;
+    await user.save();
+
+    res.json({ message: "Password changed successfully" });
+
+  } catch (error) {
+    errorLogger.error(error);
+    res.status(500).json({ message: "Server error changing password" });
+  }
+};

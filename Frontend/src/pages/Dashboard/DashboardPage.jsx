@@ -22,7 +22,7 @@ import {
   Edit,
   ChevronDown
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const DashboardPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -34,30 +34,35 @@ const DashboardPage = () => {
   const [numPages, setNumPages] = useState(null);
 
   const [documents, setDocuments] = useState([]);
+  const [flashcards, setFlashcards] = useState([]);
   const [isLoadingDocs, setIsLoadingDocs] = useState(true);
 
   // Retrieve user data to display email, fallback to example if not found
   const user = JSON.parse(localStorage.getItem('user')) || { email: 'you@example.com' };
 
   useEffect(() => {
-    const fetchDocuments = async () => {
+    const fetchDashboardData = async () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) {
           setIsLoadingDocs(false);
           return;
         }
-        const response = await axios.get('http://localhost:3400/api/documents', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setDocuments(response.data);
+        
+        const [docsRes, flashRes] = await Promise.all([
+          axios.get('http://localhost:3400/api/documents', { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get('http://localhost:3400/api/flashcards', { headers: { Authorization: `Bearer ${token}` } }).catch(() => ({ data: [] }))
+        ]);
+        
+        setDocuments(docsRes.data);
+        setFlashcards(flashRes.data);
       } catch (error) {
-        console.error('Failed to fetch documents:', error);
+        console.error('Failed to fetch dashboard data:', error);
       } finally {
         setIsLoadingDocs(false);
       }
     };
-    fetchDocuments();
+    fetchDashboardData();
   }, []);
 
   const handleFileUpload = async (event) => {
@@ -118,22 +123,22 @@ const DashboardPage = () => {
         </div>
         
         <nav className="flex-1 py-6 px-4 space-y-2">
-          <a href="#" className="flex items-center gap-3 px-4 py-3 bg-[#2a3f36] text-emerald-400 rounded-xl transition-colors">
+          <Link to="/dashboard" className="flex items-center gap-3 px-4 py-3 bg-[#2a3f36] text-emerald-400 rounded-xl transition-colors">
             <LayoutDashboard className="w-5 h-5" />
             <span className="font-medium">Dashboard</span>
-          </a>
-          <a href="#" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
+          </Link>
+          <Link to="/documents" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
             <FileText className="w-5 h-5" />
             <span className="font-medium">Documents</span>
-          </a>
-          <a href="#" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
+          </Link>
+          <Link to="/flashcards" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
             <Layers className="w-5 h-5" />
             <span className="font-medium">Flashcards</span>
-          </a>
-          <a href="#" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
+          </Link>
+          <Link to="/profile" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
             <User className="w-5 h-5" />
             <span className="font-medium">Profile</span>
-          </a>
+          </Link>
         </nav>
       </aside>
 
@@ -204,7 +209,7 @@ const DashboardPage = () => {
                 <File className="w-7 h-7 text-blue-500" />
               </div>
               <div>
-                <p className="text-3xl font-bold mb-1 text-gray-100">2</p>
+                <p className="text-3xl font-bold mb-1 text-gray-100">{documents.length}</p>
                 <p className="text-sm text-gray-400 font-medium">Total Documents</p>
               </div>
             </div>
@@ -214,7 +219,7 @@ const DashboardPage = () => {
                 <Copy className="w-7 h-7 text-pink-500" />
               </div>
               <div>
-                <p className="text-3xl font-bold mb-1 text-gray-100">2</p>
+                <p className="text-3xl font-bold mb-1 text-gray-100">{flashcards.length}</p>
                 <p className="text-sm text-gray-400 font-medium">Total Flashcards</p>
               </div>
             </div>

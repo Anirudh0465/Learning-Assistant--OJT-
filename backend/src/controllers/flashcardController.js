@@ -1,9 +1,8 @@
 import Flashcard from '../models/FlashCards.js';
 import Document from '../models/Document.js'
-import { extractTextFromPDF } from '../utils/pdfParser.js';
+import { extractTextFromBuffer } from '../utils/pdfParser.js';
 import { generateAIFlashcards } from '../services/aiService.js';
 import axios from "axios";
-import fs from 'fs';
 
 export const createFlashcards = async (req,res) => {
     try{
@@ -21,29 +20,23 @@ export const createFlashcards = async (req,res) => {
             responseType: "arraybuffer"
         });
 
-        const filePath = `temp-${Date.now()}.pdf`;
-        try {
-            fs.writeFileSync(filePath, response.data);
-            const text = await extractTextFromPDF(filePath);
-            const { summary, flashcards } = await generateAIFlashcards(text);
+        const pdfBuffer = Buffer.from(response.data);
+        const text = await extractTextFromBuffer(pdfBuffer);
+        const { summary, flashcards } = await generateAIFlashcards(text);
 
-            await Flashcard.deleteMany({ user: userId, document: documentId });
+        await Flashcard.deleteMany({ user: userId, document: documentId });
 
-            const savedCards = await Flashcard.insertMany(
-                flashcards.map(card=>({
-                    ...card,
-                    user: userId,
-                    document: documentId
-                }))
-            );
-            res.status(201).json({ summary, flashcards: savedCards });
-        } finally {
-            if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
-            }
-        }
+        const savedCards = await Flashcard.insertMany(
+            flashcards.map(card=>({
+                ...card,
+                user: userId,
+                document: documentId
+            }))
+        );
+        res.status(201).json({ summary, flashcards: savedCards });
+
     }catch(error){
-        console.error(error);
+        console.error("Flashcard generation failed:", error);
         res.status(500).json({ message: "Flashcard generation failed"});
     }
 };

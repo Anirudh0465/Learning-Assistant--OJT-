@@ -1,6 +1,46 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+export const generateAIQuiz = async (text, numQuestions = 5) => {
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  const prompt = `You are an expert educator and quiz creator.
+    Analyze the following text from a student's PDF document and create a high-quality multiple-choice quiz.
+
+    Instructions:
+    1. Create exactly ${numQuestions} multiple-choice questions based on the key concepts in the text.
+    2. Each question must have exactly 4 answer options.
+    3. The options must be the actual answer text (not labeled A/B/C/D).
+    4. Ensure only ONE option is the correct answer.
+    5. The correctAnswer value MUST exactly match one of the strings in the options array.
+
+    Return ONLY valid JSON in this exact format, with no other text or explanation:
+    [
+      {
+        "question": "...",
+        "options": ["option1", "option2", "option3", "option4"],
+        "correctAnswer": "the exact text of the correct option"
+      }
+    ]
+
+    Text:
+    ${text.slice(0, 15000)}`;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const response = await result.response.text();
+    try {
+      const cleaned = response.replace(/```json\n?/ig, '').replace(/```\n?/g, '').trim();
+      return JSON.parse(cleaned);
+    } catch (parseError) {
+      console.error("Gemini Quiz JSON Parse Error:", parseError, "\nRaw:", response);
+      throw new Error("AI returned invalid JSON for quiz");
+    }
+  } catch (apiError) {
+    console.error("Gemini Quiz API Error:", apiError);
+    throw new Error("Failed to generate quiz from AI: " + apiError.message);
+  }
+};
+
 export const generateAIFlashcards = async (text) => {
 const model = genAI.getGenerativeModel({model: "gemini-2.5-flash"});
     const prompt = `You are an expert AI tutor and study guide creator.

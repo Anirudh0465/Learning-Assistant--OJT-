@@ -1,8 +1,9 @@
-import 'dotenv/config.js';
+import 'dotenv/config';
 
 import connectDB from "./config/db.js";
 import app from './app.js';
 import { authLogger } from "./utils/logger.js";
+
 
 connectDB();
 

@@ -22,6 +22,7 @@ const DocumentListPage = () => {
   const fileInputRef = useRef(null);
   const [isUploading, setIsUploading] = useState(false);
   const [generatingFor, setGeneratingFor] = useState(null);
+  const [generatingQuizFor, setGeneratingQuizFor] = useState(null);
   const [documents, setDocuments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -117,6 +118,32 @@ const DocumentListPage = () => {
       toast.error(error.response?.data?.message || 'Failed to generate flashcards.');
     } finally {
       setGeneratingFor(null);
+    }
+  };
+
+  const handleGenerateQuiz = async (documentId) => {
+    try {
+      setGeneratingQuizFor(documentId);
+      const token = localStorage.getItem('token');
+      
+      const response = await axios.post(`http://localhost:3400/api/quizzes/generate/document/${documentId}`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      toast.success('✨ AI Quiz generated successfully!', {
+        duration: 4000
+      });
+      
+      // Since no backend endpoint returns the quizzes list, we can redirect directly to the generated quiz!
+      if(response.data?._id) {
+        navigate(`/quizzes/${response.data._id}`);
+      }
+      
+    } catch (error) {
+      console.error('Quiz Generation failed:', error);
+      toast.error(error.response?.data?.message || 'Failed to generate quiz.');
+    } finally {
+      setGeneratingQuizFor(null);
     }
   };
 
@@ -251,14 +278,14 @@ const DocumentListPage = () => {
                   </div>
                   
                   <div className="flex items-center gap-2.5">
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-[11px] uppercase tracking-wider font-semibold">
+                    <Link to="/flashcards" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-[11px] uppercase tracking-wider font-semibold hover:bg-emerald-500/20 transition-colors">
                       <Copy className="w-3.5 h-3.5" />
                       {doc.flashcardCount || 0} Flashcards
-                    </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-fuchsia-500/30 bg-fuchsia-500/10 text-fuchsia-400 text-[11px] uppercase tracking-wider font-semibold">
+                    </Link>
+                    <Link to="/quizzes" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-fuchsia-500/30 bg-fuchsia-500/10 text-fuchsia-400 text-[11px] uppercase tracking-wider font-semibold hover:bg-fuchsia-500/20 transition-colors">
                       <Edit className="w-3.5 h-3.5" />
                       0 Quizzes
-                    </div>
+                    </Link>
                   </div>
                 </div>
 
@@ -270,13 +297,23 @@ const DocumentListPage = () => {
                     ></div>
                   </div>
                   
-                  <button 
-                    onClick={() => handleGenerateFlashcards(doc._id)}
-                    disabled={generatingFor === doc._id}
-                    className="px-5 py-2.5 bg-[#10b981] hover:bg-[#059669] text-white text-sm font-semibold rounded-lg transition-colors flex-shrink-0 shadow-lg shadow-emerald-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {generatingFor === doc._id ? 'Generating AI...' : 'Generate Flashcards'}
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <button 
+                      onClick={() => handleGenerateQuiz(doc._id)}
+                      disabled={generatingQuizFor === doc._id}
+                      className="px-5 py-2.5 bg-[#8b5cf6] hover:bg-[#7c3aed] text-white text-sm font-semibold rounded-lg transition-colors flex-shrink-0 shadow-lg shadow-purple-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {generatingQuizFor === doc._id ? 'Generating...' : 'Generate Quiz'}
+                    </button>
+                    
+                    <button 
+                      onClick={() => handleGenerateFlashcards(doc._id)}
+                      disabled={generatingFor === doc._id}
+                      className="px-5 py-2.5 bg-[#10b981] hover:bg-[#059669] text-white text-sm font-semibold rounded-lg transition-colors flex-shrink-0 shadow-lg shadow-emerald-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {generatingFor === doc._id ? 'Generating...' : 'Generate Flashcards'}
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

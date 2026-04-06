@@ -11,8 +11,9 @@ import DocumentListPage from './pages/Documents/DocumentListPage';
 const DocumentDetailPage = () => <div>Document Detail</div>;
 import FlashcardsListPage from './pages/Flashcards/FlashcardListPage';
 import FlashcardStudyPage from './pages/Flashcards/FlashcardStudyPage';
-const QuizTakePage = () => <div>Quiz Take</div>;
-const QuizResultPage = () => <div>Quiz Result</div>;
+import { QuizTakePage } from './pages/Quizes/QuizTakePage';
+import { QuizResultpage as QuizResultPage } from './pages/Quizes/QuizResultpage';
+import QuizListPage from './pages/Quizes/QuizListPage';
 import ProfilePage from './pages/Profile/ProfilePage';
 
 const App = () => {
@@ -34,6 +35,7 @@ const App = () => {
           <Route path="/documents/:id" element={<DocumentDetailPage />} />
           <Route path="/flashcards" element={<FlashcardsListPage />} />
           <Route path="/flashcards/:documentId" element={<FlashcardStudyPage />} />
+          <Route path="/quizzes" element={<QuizListPage />} />
           <Route path="/quizzes/:quizId" element={<QuizTakePage />} />
           <Route path="/quizzes/:quizId/results" element={<QuizResultPage />} />
           <Route path="/profile" element={<ProfilePage />} />

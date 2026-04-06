@@ -3,9 +3,6 @@ import Attempt from "../models/Attempt.js";
 import Pdf from "../models/Pdf.js";
 import Document from "../models/Document.js";
 import { generateAIQuiz } from "../services/aiService.js";
-import { extractTextFromBuffer } from "../utils/pdfParser.js";
-import axios from "axios";
-
 // Generate quiz from a Pdf record (legacy)
 export const generateQuizFromPdf = async (req, res) => {
   try {

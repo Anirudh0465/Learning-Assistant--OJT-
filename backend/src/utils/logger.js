@@ -8,11 +8,15 @@ const  format = winston.format.combine(
     })
 );
 
+const isProd = process.env.VERCEL || process.env.NODE_ENV === 'production';
+
 const createLogger = (filename, level = 'info') => 
     winston.createLogger({
         level,
         format,
-        transports:[new winston.transports.File({ filename: `./logs/${filename}`}), ],
+        transports: isProd 
+            ? [new winston.transports.Console()]
+            : [new winston.transports.File({ filename: `./logs/${filename}`})],
     });
 
 export const authLogger = createLogger('auth.log');
@@ -21,8 +25,10 @@ export const errorLogger = createLogger('error.log','error');
 export const combinedLogger = winston.createLogger({
     level: "info",
     format,
-    transports:[
-        new winston.transports.Console(),
-        new winston.transports.File({ filename:"logs/combined.log" }),
-    ],
-})
+    transports: isProd 
+        ? [new winston.transports.Console()]
+        : [
+            new winston.transports.Console(),
+            new winston.transports.File({ filename:"logs/combined.log" }),
+        ],
+});

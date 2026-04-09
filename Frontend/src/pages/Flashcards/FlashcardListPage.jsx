@@ -11,7 +11,8 @@ import {
   LogOut,
   ChevronDown,
   CheckCircle2,
-  CheckCircle
+  CheckCircle,
+  HelpCircle
 } from 'lucide-react';
 
 const FlashcardListPage = () => {
@@ -112,6 +113,10 @@ const FlashcardListPage = () => {
             <Link to="/flashcards" className="flex items-center gap-3 px-4 py-3 bg-[#2a3f36] text-emerald-400 rounded-xl transition-colors">
               <Layers className="w-5 h-5" />
               <span className="font-medium text-[15px]">Flashcards</span>
+            </Link>
+            <Link to="/quizzes" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
+              <HelpCircle className="w-5 h-5" />
+              <span className="font-medium text-[15px]">Quizzes</span>
             </Link>
             <Link to="/profile" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
               <User className="w-5 h-5" />

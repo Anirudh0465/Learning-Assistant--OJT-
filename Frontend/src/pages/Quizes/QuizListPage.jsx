@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Bot, 
@@ -8,7 +9,9 @@ import {
   User, 
   Bell, 
   LogOut,
-  ChevronDown
+  ChevronDown,
+  CheckCircle,
+  HelpCircle
 } from 'lucide-react';
 
 const QuizListPage = () => {
@@ -22,6 +25,43 @@ const QuizListPage = () => {
     localStorage.removeItem('user');
     navigate('/login');
   };
+
+  const [quizzes, setQuizzes] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchQuizzes = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setIsLoading(false);
+          return;
+        }
+
+        const response = await axios.get('http://localhost:3400/api/quizzes', { 
+          headers: { Authorization: `Bearer ${token}` } 
+        });
+
+        const formattedQuizzes = response.data.map(quiz => {
+          const date = new Date(quiz.createdAt);
+          return {
+            id: quiz._id,
+            title: quiz.title || 'AI Generated Quiz',
+            created: date.toLocaleDateString('en-GB') + ', ' + date.toLocaleTimeString('en-GB'),
+            questions: quiz.questions?.length || 0,
+            progress: 0 
+          };
+        });
+
+        setQuizzes(formattedQuizzes);
+      } catch (error) {
+        console.error('Failed to fetch quizzes:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchQuizzes();
+  }, []);
 
   return (
     <div className="min-h-screen flex bg-[#1a1a21] text-white font-sans">
@@ -49,7 +89,7 @@ const QuizListPage = () => {
               <span className="font-medium text-[15px]">Flashcards</span>
             </Link>
             <Link to="/quizzes" className="flex items-center gap-3 px-4 py-3 bg-[#2a3f36] text-emerald-400 rounded-xl transition-colors">
-              <Layers className="w-5 h-5" />
+              <HelpCircle className="w-5 h-5" />
               <span className="font-medium text-[15px]">Quizzes</span>
             </Link>
             <Link to="/profile" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
@@ -110,7 +150,28 @@ const QuizListPage = () => {
         <div className="flex-1 overflow-y-auto p-10 bg-[#1a1a21]">
           <h1 className="text-[22px] font-semibold tracking-tight text-[#f1f1f1] mb-8">All Quizzes</h1>
           
-          <p className="text-gray-400 mb-6 font-medium">To view and take your quizzes, please launch them directly from the Documents page!</p>
+          {isLoading && <p className="text-gray-400 mb-6 font-medium">Loading your quizzes...</p>}
+          {!isLoading && quizzes.length === 0 && (
+            <p className="text-gray-400 mb-6 font-medium">No quizzes generated yet. Generate some from a document!</p>
+          )}
+
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+            {quizzes.map((quiz) => (
+              <div key={quiz.id} className="bg-[#22222a] border border-gray-800/80 rounded-[14px] p-6 shadow-sm hover:border-gray-700 transition-colors flex flex-col justify-between">
+                <div>
+                    <h3 className="text-[17px] font-semibold text-[#f1f1f1] mb-1.5 tracking-wide">{quiz.title}</h3>
+                    <p className="text-[12px] text-[#787883] font-medium tracking-wide uppercase mb-6">CREATED: {quiz.created}</p>
+                </div>
+                
+                <div className="flex items-center justify-between mt-4">
+                  <span className="text-[15px] font-medium text-gray-400">{quiz.questions} Questions</span>
+                  <Link to={`/quizzes/${quiz.id}`} className="px-6 py-2 bg-[#8b5cf6] hover:bg-[#7c3aed] text-white text-[15px] font-semibold rounded-[8px] transition-colors shadow-lg shadow-purple-500/10 tracking-wide">
+                    Take Quiz
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
           
         </div>
       </main>

@@ -3,6 +3,9 @@ import Attempt from "../models/Attempt.js";
 import Pdf from "../models/Pdf.js";
 import Document from "../models/Document.js";
 import { generateAIQuiz } from "../services/aiService.js";
+import axios from "axios";
+import { extractTextFromBuffer } from "../utils/pdfParser.js";
+
 // Generate quiz from a Pdf record (legacy)
 export const generateQuizFromPdf = async (req, res) => {
   try {
@@ -58,6 +61,16 @@ export const generateQuizFromDocument = async (req, res) => {
   }
 };
 
+export const getQuizzes = async (req, res) => {
+  try {
+    const quizzes = await Quiz.find({ user: req.user.id }).sort({ createdAt: -1 });
+    res.json(quizzes);
+  } catch (err) {
+    console.error("Get quizzes failed:", err);
+    res.status(500).json({ message: "Failed to fetch quizzes" });
+  }
+};
+
 export const getQuizById = async (req, res) => {
   try {
     const quiz = await Quiz.findById(req.params.id);
@@ -72,7 +85,8 @@ export const getQuizById = async (req, res) => {
       questions: quiz.questions.map(q => ({
         _id: q._id,
         question: q.question,
-        options: q.options
+        options: q.options,
+        correctAnswer: q.correctAnswer
       }))
     };
 

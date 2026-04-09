@@ -20,7 +20,10 @@ import {
   File,
   Copy,
   Edit,
-  ChevronDown
+  ChevronDown,
+  Search,
+  Trash2,
+  HelpCircle
 } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 
@@ -35,7 +38,9 @@ const DashboardPage = () => {
 
   const [documents, setDocuments] = useState([]);
   const [flashcards, setFlashcards] = useState([]);
+  const [quizzes, setQuizzes] = useState([]);
   const [isLoadingDocs, setIsLoadingDocs] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Retrieve user data to display email, fallback to example if not found
   const user = JSON.parse(localStorage.getItem('user')) || { email: 'you@example.com' };
@@ -49,13 +54,15 @@ const DashboardPage = () => {
           return;
         }
         
-        const [docsRes, flashRes] = await Promise.all([
+        const [docsRes, flashRes, quizRes] = await Promise.all([
           axios.get('http://localhost:3400/api/documents', { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get('http://localhost:3400/api/flashcards', { headers: { Authorization: `Bearer ${token}` } }).catch(() => ({ data: [] }))
+          axios.get('http://localhost:3400/api/flashcards', { headers: { Authorization: `Bearer ${token}` } }).catch(() => ({ data: [] })),
+          axios.get('http://localhost:3400/api/quizzes', { headers: { Authorization: `Bearer ${token}` } }).catch(() => ({ data: [] }))
         ]);
         
         setDocuments(docsRes.data);
         setFlashcards(flashRes.data);
+        setQuizzes(quizRes.data);
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
       } finally {
@@ -105,6 +112,23 @@ const DashboardPage = () => {
     }
   };
 
+  const handleDeleteDocument = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this document? This will also delete any generated flashcards and quizzes associated with it.')) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`http://localhost:3400/api/documents/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Document deleted successfully');
+      setDocuments(prev => prev.filter(doc => doc._id !== id));
+      if (pdfUrl && documents.find(d => d._id === id)?.fileUrl === pdfUrl) setPdfUrl(null);
+    } catch (error) {
+      console.error('Delete failed:', error);
+      toast.error('Failed to delete document');
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -135,6 +159,10 @@ const DashboardPage = () => {
             <Layers className="w-5 h-5" />
             <span className="font-medium">Flashcards</span>
           </Link>
+          <Link to="/quizzes" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
+            <HelpCircle className="w-5 h-5" />
+            <span className="font-medium">Quizzes</span>
+          </Link>
           <Link to="/profile" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
             <User className="w-5 h-5" />
             <span className="font-medium">Profile</span>
@@ -145,7 +173,21 @@ const DashboardPage = () => {
       {/* Main Content */}
       <main className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="h-20 flex items-center justify-end px-8 border-b border-gray-800 bg-[#1a1a21]">
+        <header className="h-20 flex items-center justify-between px-8 border-b border-gray-800 bg-[#1a1a21]">
+          {/* Search Bar */}
+          <div className="flex-1 max-w-xl relative mx-8">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Search className="w-5 h-5 text-gray-500" />
+            </div>
+            <input 
+              type="text" 
+              placeholder="Search documents..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-4 py-2.5 bg-[#22222a] border border-gray-800 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors"
+            />
+          </div>
+
           <div className="flex items-center gap-6">
             <button className="relative text-gray-400 hover:text-white transition-colors">
               <Bell className="w-6 h-6" />
@@ -229,7 +271,7 @@ const DashboardPage = () => {
                 <Edit className="w-7 h-7 text-emerald-500" />
               </div>
               <div>
-                <p className="text-3xl font-bold mb-1 text-gray-100">0</p>
+                <p className="text-3xl font-bold mb-1 text-gray-100">{quizzes.length}</p>
                 <p className="text-sm text-gray-400 font-medium">Total Quizzes</p>
               </div>
             </div>
@@ -246,7 +288,7 @@ const DashboardPage = () => {
                 <div className="px-6 py-4 text-gray-400 text-sm">Loading documents...</div>
               ) : documents.length === 0 ? (
                 <div className="px-6 py-4 text-gray-400 text-sm">No documents uploaded yet.</div>
-              ) : documents.map((doc) => (
+              ) : documents.filter(doc => doc.originalName.toLowerCase().includes(searchQuery.toLowerCase())).map((doc) => (
                 <div key={doc._id} className="flex items-center justify-between px-6 py-4 border-b border-gray-800/60 hover:bg-[#2d2d39] transition-colors last:border-b-0">
                   <div className="flex-1">
                     <h3 className="text-[15px] font-medium text-gray-200 mb-1">{doc.originalName}</h3>
@@ -257,15 +299,24 @@ const DashboardPage = () => {
                       {new Date(doc.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
                     </span>
                   </div>
-                  <div>
+                  <div className="flex items-center gap-3">
                     <button 
                       onClick={() => setPdfUrl(doc.fileUrl)}
                       className="bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors border border-emerald-500/20 hover:border-emerald-500">
                       View
                     </button>
+                    <button 
+                      onClick={() => handleDeleteDocument(doc._id)}
+                      title="Delete document"
+                      className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white p-2.5 rounded-lg text-sm font-medium transition-colors border border-red-500/20 hover:border-red-500 flex items-center justify-center">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
               ))}
+              {!isLoadingDocs && documents.length > 0 && documents.filter(doc => doc.originalName.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                <div className="px-6 py-4 text-gray-400 text-sm">No documents match your search.</div>
+              )}
             </div>
           </div>
           {/* PDF Viewer Section */}

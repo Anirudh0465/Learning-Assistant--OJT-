@@ -2,6 +2,7 @@ import express from "express";
 import {
   generateQuizFromPdf,
   generateQuizFromDocument,
+  getMyQuizzes,
   getQuizById,
   submitQuiz,
   getQuizzes
@@ -13,6 +14,7 @@ const router = express.Router();
 
 router.post("/generate/pdf/:id", protect, generateQuizFromPdf);
 router.post("/generate/document/:id", protect, generateQuizFromDocument);
+router.get("/", protect, getMyQuizzes);
 router.get("/:id", protect, getQuizById);
 router.post("/:id/submit", protect, submitQuiz);
 router.get("/", protect, getQuizzes);

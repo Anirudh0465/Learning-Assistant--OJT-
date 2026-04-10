@@ -23,60 +23,11 @@
 2026-03-18T09:57:29.818Z [INFO]: User Created: 69ba7709d28efd0120ce87ea
 2026-03-18T09:57:39.450Z [INFO]: Login Attempt: abcd@mail.com
 2026-03-18T09:57:39.733Z [INFO]: Login Sucessful: 69ba7709d28efd0120ce87ea
-<<<<<<< Updated upstream
-2026-03-20T18:01:34.357Z [INFO]: Server running on port 3400
-2026-03-20T18:05:28.658Z [INFO]: Login Attempt: abcd@mail.com
-2026-03-20T18:05:28.772Z [WARN]: Login failed (abcd@mail.com)
-2026-03-20T18:05:52.400Z [INFO]: Signup attempt: abcdd@mail.com
-2026-03-20T18:05:52.534Z [INFO]: User Created: 69bd8c8059818dc6d982107d
-2026-03-20T18:06:00.321Z [INFO]: Login Attempt: abcdd@mail.com
-2026-03-20T18:06:00.406Z [INFO]: Login Successful: 69bd8c8059818dc6d982107d
-2026-03-20T18:06:07.314Z [INFO]: Login Attempt: abcdd@mail.com
-2026-03-20T18:06:07.406Z [INFO]: Login Successful: 69bd8c8059818dc6d982107d
-2026-03-20T18:15:20.896Z [INFO]: Server running on port 3400
-2026-03-20T18:16:26.693Z [INFO]: Login Attempt: abcdd@mail.com
-2026-03-20T18:16:26.797Z [WARN]: Login failed (abcdd@mail.com)
-2026-03-20T18:16:31.670Z [INFO]: Login Attempt: abcdd@mail.com
-2026-03-20T18:16:32.002Z [WARN]: Login failed (abcdd@mail.com)
-2026-03-20T18:17:08.601Z [INFO]: Signup attempt: testing@mail.com
-2026-03-20T18:17:08.722Z [INFO]: User Created: 69bd8f24f2b15fcacd1aa85c
-2026-03-20T18:17:14.736Z [INFO]: Login Attempt: testing@mail.com
-2026-03-20T18:17:14.820Z [INFO]: Login Successful: 69bd8f24f2b15fcacd1aa85c
-2026-03-20T18:20:14.352Z [INFO]: Login Attempt: testing@mail.com
-2026-03-20T18:20:14.440Z [WARN]: Login failed (testing@mail.com)
-2026-03-20T18:20:21.723Z [INFO]: Login Attempt: testing@mail.com
-2026-03-20T18:20:21.810Z [WARN]: Login failed (testing@mail.com)
-2026-03-20T18:20:29.882Z [INFO]: Login Attempt: testing@mail.com
-2026-03-20T18:20:29.966Z [WARN]: Login failed (testing@mail.com)
-2026-03-20T18:21:04.759Z [INFO]: Signup attempt: testingd@mail.com
-2026-03-20T18:21:04.882Z [INFO]: User Created: 69bd9010f2b15fcacd1aa863
-2026-03-20T18:21:19.534Z [INFO]: Login Attempt: testingd@mail.com
-2026-03-20T18:21:19.631Z [INFO]: Login Successful: 69bd9010f2b15fcacd1aa863
-2026-03-21T09:42:38.416Z [INFO]: Server running on port 3400
-2026-03-21T09:55:18.958Z [INFO]: Server running on port 3400
-2026-03-21T09:55:44.292Z [INFO]: Login Attempt: testingd@mail.com
-2026-03-21T09:55:44.615Z [INFO]: Login Successful: 69bd9010f2b15fcacd1aa863
-2026-03-21T09:57:24.890Z [INFO]: Server running on port 3400
-2026-03-21T09:57:33.247Z [INFO]: Login Attempt: testingd@mail.com
-2026-03-21T09:57:33.533Z [INFO]: Login Successful: 69bd9010f2b15fcacd1aa863
-2026-03-21T10:03:14.733Z [INFO]: Server running on port 3400
-2026-03-21T10:03:35.659Z [INFO]: Server running on port 3400
-2026-03-21T10:03:41.990Z [INFO]: Login Attempt: testingd@mail.com
-2026-03-21T10:03:42.251Z [INFO]: Login Successful: 69bd9010f2b15fcacd1aa863
-2026-03-21T10:05:35.175Z [INFO]: Server running on port 3400
-2026-03-21T10:05:48.588Z [INFO]: Server running on port 3400
-2026-03-21T10:05:55.769Z [INFO]: Login Attempt: testingd@mail.com
-2026-03-21T10:05:56.071Z [INFO]: Login Successful: 69bd9010f2b15fcacd1aa863
-2026-03-21T10:12:38.410Z [INFO]: Server running on port 3400
-2026-03-21T10:12:55.794Z [INFO]: Login Attempt: testingd@mail.com
-2026-03-21T10:12:56.074Z [INFO]: Login Successful: 69bd9010f2b15fcacd1aa863
-=======
 2026-03-19T10:52:26.027Z [INFO]: Server running on port 3400
 2026-03-19T10:52:40.390Z [INFO]: Login Attempt: ayush.945484658@gmail.com
 2026-03-19T10:52:40.624Z [INFO]: Login Sucessful: 69a576e3c9716f82a3905bca
 2026-03-19T11:42:45.298Z [INFO]: Signup attempt: ayush.94548kok4658@gmail.com
 2026-03-19T11:42:45.540Z [INFO]: User Created: 69bbe1357ea699039f43e418
->>>>>>> Stashed changes
 2026-03-22T18:46:05.005Z [INFO]: Server running on port 3400
 2026-03-22T18:48:12.579Z [INFO]: Server running on port 3400
 2026-03-22T18:48:33.531Z [INFO]: Login Attempt: ayush.9454846458@gmail.com
@@ -254,40 +205,15 @@
 2026-04-04T12:02:21.243Z [INFO]: Server running on port 3400
 2026-04-04T12:02:21.265Z [INFO]: Server running on port 3400
 2026-04-04T12:02:21.257Z [INFO]: Server running on port 3400
-2026-04-06T12:49:32.078Z [INFO]: Server running on port 3400
-2026-04-06T12:54:18.333Z [INFO]: Server running on port 3400
-2026-04-06T12:55:34.254Z [INFO]: Server running on port 3400
-2026-04-06T13:04:37.911Z [INFO]: Server running on port 3400
-2026-04-06T13:04:37.948Z [INFO]: Server running on port 3400
-2026-04-06T13:04:39.676Z [INFO]: Server running on port 3400
-2026-04-06T13:04:39.676Z [INFO]: Server running on port 3400
-2026-04-06T13:05:43.668Z [INFO]: Server running on port 3400
-2026-04-06T13:05:43.669Z [INFO]: Server running on port 3400
-2026-04-06T13:09:16.768Z [INFO]: Server running on port 3400
-2026-04-09T08:53:53.422Z [INFO]: Server running on port 3400
-2026-04-09T16:03:55.675Z [INFO]: Server running on port 3400
-2026-04-09T16:08:24.857Z [INFO]: Server running on port 3400
-2026-04-09T16:08:40.374Z [INFO]: Signup attempt: test111@test.com
-2026-04-09T16:08:40.502Z [INFO]: User Created: 69d7cf08be413744bb7dc96f
-2026-04-09T16:09:55.950Z [INFO]: Signup attempt: ayush.9454dd84658@gmail.com
-2026-04-09T16:09:56.403Z [INFO]: User Created: 69d7cf54be413744bb7dc973
-2026-04-09T16:11:55.872Z [INFO]: Server running on port 3400
-2026-04-09T16:14:02.335Z [INFO]: Server running on port 3400
-2026-04-09T16:15:12.807Z [INFO]: Server running on port 3400
-2026-04-09T16:15:25.726Z [INFO]: Server running on port 3400
-2026-04-09T16:16:17.003Z [INFO]: Server running on port 3400
-2026-04-09T16:27:00.069Z [INFO]: Server running on port 3400
-2026-04-09T16:27:07.662Z [INFO]: Server running on port 3400
-2026-04-09T16:27:23.584Z [INFO]: Server running on port 3400
-2026-04-09T16:27:37.200Z [INFO]: Server running on port 3400
-2026-04-09T16:32:10.951Z [INFO]: Server running on port 3400
-2026-04-09T16:32:50.096Z [INFO]: Server running on port 3400
-2026-04-09T16:36:31.378Z [INFO]: Server running on port 3400
-2026-04-09T16:39:56.341Z [INFO]: Login Attempt: ayush.945484658@gmail.com
-2026-04-09T16:39:56.524Z [INFO]: Login Successful: 69a576e3c9716f82a3905bca
-2026-04-09T16:41:38.723Z [INFO]: Server running on port 3400
-2026-04-09T16:42:45.503Z [INFO]: Server running on port 3400
-2026-04-09T16:44:33.150Z [INFO]: Server running on port 3400
-2026-04-09T16:52:39.108Z [INFO]: Server running on port 3400
-2026-04-09T16:52:48.860Z [INFO]: Server running on port 3400
-2026-04-09T17:04:53.625Z [INFO]: Server running on port 3400
+2026-04-09T07:54:53.847Z [INFO]: Server running on port 3400
+2026-04-09T07:59:20.172Z [INFO]: Server running on port 3400
+2026-04-09T07:59:31.769Z [INFO]: Server running on port 3400
+2026-04-09T08:00:04.324Z [INFO]: Server running on port 3400
+2026-04-09T08:01:03.449Z [INFO]: Server running on port 3400
+2026-04-09T08:01:19.906Z [INFO]: Server running on port 3400
+2026-04-09T08:01:30.092Z [INFO]: Server running on port 3400
+2026-04-09T08:02:26.087Z [INFO]: Server running on port 3400
+2026-04-09T08:07:28.619Z [INFO]: Server running on port 3400
+2026-04-09T08:17:12.445Z [INFO]: Server running on port 3400
+2026-04-09T08:17:29.588Z [INFO]: Server running on port 3400
+2026-04-09T08:18:51.100Z [INFO]: Server running on port 3400

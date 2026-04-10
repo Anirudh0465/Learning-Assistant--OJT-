@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { aiLogger } from "../utils/logger.js";
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export const generateAIQuiz = async (text, numQuestions = 5) => {
@@ -32,36 +33,12 @@ export const generateAIQuiz = async (text, numQuestions = 5) => {
       const cleaned = response.replace(/```json\n?/ig, '').replace(/```\n?/g, '').trim();
       return JSON.parse(cleaned);
     } catch (parseError) {
-      console.error("Gemini Quiz JSON Parse Error:", parseError, "\nRaw:", response);
-      const fallbackQuestions = Array.from({ length: 15 }).map((_, i) => ({
-        question: `Fallback Question ${i + 1}: The AI generation failed due to JSON parsing limits. What is the standard fallback behavior?`,
-        options: ["Provide dummy data", "Crash the server", "Delete the user account", "None of the above"],
-        correctAnswer: "Provide dummy data"
-      }));
-      fallbackQuestions[0].question = "Why did the JSON parsing fail for this AI quiz?";
-      fallbackQuestions[0].options = ["Invalid JSON format returned", "AI misunderstood instructions", "Response was truncated", "All of the above"];
-      fallbackQuestions[0].correctAnswer = "All of the above";
-      
-      fallbackQuestions[1].question = "What is the recommended next step?";
-      fallbackQuestions[1].options = ["Try generating the quiz again", "Ignore it", "Delete the document", "None of the above"];
-      fallbackQuestions[1].correctAnswer = "Try generating the quiz again";
-      return fallbackQuestions;
+      aiLogger.error("Gemini Quiz JSON Parse Error: " + parseError + "\nRaw: " + response);
+      throw new Error("AI returned invalid JSON for quiz");
     }
   } catch (apiError) {
-    console.error("Gemini Quiz API Error:", apiError);
-    const fallbackQuestions = Array.from({ length: 15 }).map((_, i) => ({
-      question: `Fallback Question ${i + 1}: Since the API quota was exceeded, this is a placeholder question. Is the sky blue?`,
-      options: ["Yes, due to Rayleigh scattering", "No, it's green", "It's purple", "Depends on the mood"],
-      correctAnswer: "Yes, due to Rayleigh scattering"
-    }));
-    fallbackQuestions[0].question = "Why did the AI quiz generation fail to connect?";
-    fallbackQuestions[0].options = ["API Quota Exceeded", "Invalid API Key", "Google Servers Down", "All of the above"];
-    fallbackQuestions[0].correctAnswer = "All of the above";
-
-    fallbackQuestions[1].question = "How can you resolve this quota or server issue?";
-    fallbackQuestions[1].options = ["Check your Google API Billing", "Wait a few minutes and retry", "Create a new API Key", "All of the above"];
-    fallbackQuestions[1].correctAnswer = "All of the above";
-    return fallbackQuestions;
+    aiLogger.error("Gemini Quiz API Error: " + apiError);
+    throw new Error("Failed to generate quiz from AI: " + apiError.message);
   }
 };
 
@@ -97,7 +74,7 @@ const model = genAI.getGenerativeModel({model: "gemini-2.0-flash"});
             const cleaned = response.replace(/```json\n?/ig, '').replace(/```\n?/g, '').trim();
             return JSON.parse(cleaned);
         } catch (parseError) {
-            console.error("Gemini JSON Parse Error:", parseError, "\nRaw AI Response:", response);
+            aiLogger.error("Gemini JSON Parse Error: " + parseError + "\nRaw AI Response: " + response);
             return {
                 summary: "AI generated invalid data.",
                 flashcards: [
@@ -107,7 +84,7 @@ const model = genAI.getGenerativeModel({model: "gemini-2.0-flash"});
             };
         }
     } catch (apiError) {
-        console.error("Gemini API Request Error:", apiError);
+        aiLogger.error("Gemini API Request Error: " + apiError);
         return {
             summary: "AI analysis failed due to server error.",
             flashcards: [

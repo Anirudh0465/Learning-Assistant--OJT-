@@ -4,8 +4,7 @@ import {
   generateQuizFromDocument,
   getMyQuizzes,
   getQuizById,
-  submitQuiz,
-  getQuizzes
+  submitQuiz
 } from "../controllers/quizControllers.js";
 
 import { protect } from "../middleware/authMiddleware.js";
@@ -17,6 +16,5 @@ router.post("/generate/document/:id", protect, generateQuizFromDocument);
 router.get("/", protect, getMyQuizzes);
 router.get("/:id", protect, getQuizById);
 router.post("/:id/submit", protect, submitQuiz);
-router.get("/", protect, getQuizzes);
 
 export default router;

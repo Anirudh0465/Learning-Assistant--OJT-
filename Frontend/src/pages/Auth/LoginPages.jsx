@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import { useAuth } from '../../context/AuthContext';
 import { Mail, Lock, ArrowRight, Sparkles } from 'lucide-react';
 
 const LoginPages = () => {
@@ -8,6 +8,7 @@ const LoginPages = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   React.useEffect(() => {
     if (localStorage.getItem('token')) {
@@ -25,18 +26,10 @@ const LoginPages = () => {
     setError('');
 
     try {
-      const res = await axios.post('http://localhost:3400/api/auth/login', formData);
-
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
-
+      await login(formData.email, formData.password);
       navigate('/dashboard');
     } catch (err) {
-      if (err.response && err.response.data.message) {
-        setError(err.response.data.message);
-      } else {
-        setError('Login failed. Please check your credentials.');
-      }
+      setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }

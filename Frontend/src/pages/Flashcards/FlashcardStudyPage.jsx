@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../../utiles/axiosInstance';
 import { ArrowLeft, ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
 
 const FlashcardStudyPage = () => {
@@ -15,10 +15,7 @@ const FlashcardStudyPage = () => {
   useEffect(() => {
     const fetchCards = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:3400/api/flashcards', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const res = await axiosInstance.get('/flashcards');
         
         // Filter cards belonging to this document
         const documentCards = res.data.filter(card => card.document === documentId);

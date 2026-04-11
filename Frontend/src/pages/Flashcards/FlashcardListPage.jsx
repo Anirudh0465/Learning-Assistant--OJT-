@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../utiles/axiosInstance';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Bot, 
@@ -40,8 +40,8 @@ const FlashcardListPage = () => {
         }
 
         const [docsRes, flashRes] = await Promise.all([
-          axios.get('http://localhost:3400/api/documents', { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get('http://localhost:3400/api/flashcards', { headers: { Authorization: `Bearer ${token}` } }).catch(() => ({ data: [] }))
+          axiosInstance.get('/documents'),
+          axiosInstance.get('/flashcards').catch(() => ({ data: [] }))
         ]);
 
         const docs = docsRes.data || [];

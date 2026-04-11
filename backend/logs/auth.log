@@ -217,3 +217,36 @@
 2026-04-09T08:17:12.445Z [INFO]: Server running on port 3400
 2026-04-09T08:17:29.588Z [INFO]: Server running on port 3400
 2026-04-09T08:18:51.100Z [INFO]: Server running on port 3400
+2026-04-10T09:55:02.299Z [INFO]: Server running on port 3400
+2026-04-10T09:55:06.057Z [INFO]: Server running on port 3400
+2026-04-10T09:59:00.930Z [INFO]: Server running on port 3400
+2026-04-10T10:00:06.044Z [INFO]: Login Attempt: test@test.com
+2026-04-10T10:00:06.108Z [WARN]: Login failed (test@test.com)
+2026-04-10T10:01:02.523Z [INFO]: Server running on port 3400
+2026-04-10T10:04:36.478Z [INFO]: Signup attempt: test@test.com
+2026-04-10T10:04:36.841Z [INFO]: User Created: 69d8cb3432d7a65e8083912b
+2026-04-10T10:04:41.849Z [INFO]: Login Attempt: test@test.com
+2026-04-10T10:04:42.121Z [INFO]: Login Successful: 69d8cb3432d7a65e8083912b
+2026-04-10T10:06:04.132Z [INFO]: Server running on port 3400
+2026-04-10T10:08:57.959Z [INFO]: Server running on port 3400
+2026-04-10T10:08:57.964Z [INFO]: Server running on port 3400
+2026-04-10T10:09:03.947Z [INFO]: Server running on port 3400
+2026-04-10T10:09:04.040Z [INFO]: Server running on port 3400
+2026-04-10T10:15:38.611Z [INFO]: Server running on port 3400
+2026-04-10T10:15:38.613Z [INFO]: Server running on port 3400
+2026-04-10T10:16:51.675Z [INFO]: Server running on port 3400
+2026-04-10T10:17:16.376Z [INFO]: Login Attempt: test@test.com
+2026-04-10T10:17:16.502Z [WARN]: Login failed (test@test.com)
+2026-04-10T10:17:21.653Z [INFO]: Login Attempt: test@test.com
+2026-04-10T10:17:21.760Z [WARN]: Login failed (test@test.com)
+2026-04-10T10:17:23.556Z [INFO]: Login Attempt: test@test.com
+2026-04-10T10:17:23.659Z [INFO]: Login Successful: 69d8cb3432d7a65e8083912b
+2026-04-10T10:19:14.465Z [INFO]: Server running on port 3400
+2026-04-10T10:24:37.071Z [INFO]: Server running on port 3400
+2026-04-10T10:24:37.085Z [INFO]: Server running on port 3400
+2026-04-10T10:25:34.463Z [INFO]: Server running on port 3400
+2026-04-10T10:25:34.516Z [INFO]: Server running on port 3400
+2026-04-10T10:27:42.786Z [INFO]: Server running on port 3400
+2026-04-10T10:41:49.461Z [INFO]: Server running on port 3400
+2026-04-10T10:52:48.100Z [INFO]: Server running on port 3400
+2026-04-10T10:52:48.102Z [INFO]: Server running on port 3400

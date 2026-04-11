@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../../utiles/axiosInstance';
 import { toast } from 'react-hot-toast';
 import { 
   Bot, 
@@ -41,10 +41,7 @@ const ProfilePage = () => {
     e.preventDefault();
     try {
       setIsSavingProfile(true);
-      const token = localStorage.getItem('token');
-      const res = await axios.put('http://localhost:3400/api/auth/profile', profileForm, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await axiosInstance.put('/auth/profile', profileForm);
       setUser(res.data.user);
       localStorage.setItem('user', JSON.stringify(res.data.user));
       toast.success(res.data.message || 'Profile updated successfully!');
@@ -62,12 +59,9 @@ const ProfilePage = () => {
     }
     try {
       setIsSavingPassword(true);
-      const token = localStorage.getItem('token');
-      const res = await axios.put('http://localhost:3400/api/auth/password', {
+      const res = await axiosInstance.put('/auth/password', {
         currentPassword: passwordForm.currentPassword,
         newPassword: passwordForm.newPassword
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
       toast.success(res.data.message || 'Password changed successfully!');
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });

@@ -1,9 +1,92 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { aiLogger } from "../utils/logger.js";
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+const modelName = process.env.GEMINI_MODEL || "gemini-2.0-flash";
+const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
+
+const splitSentences = (text) => {
+  return text
+    .replace(/\n+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .split(/(?<=[.!?])\s+/)
+    .filter(Boolean);
+};
+
+const safeTextSummary = (text) => {
+  const sentences = splitSentences(text);
+  if (sentences.length === 0) return "No content available.";
+  return sentences.slice(0, 2).join(' ').slice(0, 300);
+};
+
+const generateFallbackFlashcards = (text) => {
+  const sentences = splitSentences(text);
+  const summary = safeTextSummary(text);
+  const cards = sentences.slice(0, 10).map((sentence, index) => ({
+    question: `What is the key idea in sentence ${index + 1}?`,
+    answer: sentence
+  }));
+  return {
+    summary: summary || "Fallback flashcards generated from text.",
+    flashcards: cards.length ? cards : [
+      { question: "What is the main topic?", answer: "The document contains study material." }
+    ]
+  };
+};
+
+const generateFallbackQuiz = (text, numQuestions = 5) => {
+  const sentences = splitSentences(text);
+  const questions = [];
+  const source = sentences.length >= numQuestions ? sentences : sentences.concat(Array(numQuestions - sentences.length).fill('Review the document content.'));
+
+  for (let i = 0; i < numQuestions; i++) {
+    const correct = source[i] || 'Review the document content.';
+    const distractors = source
+      .filter((_, idx) => idx !== i)
+      .slice(0, 3)
+      .map((s) => s.substring(0, 80));
+
+    const options = [correct, ...distractors].slice(0, 4);
+    while (options.length < 4) {
+      options.push('No additional option available');
+    }
+
+    questions.push({
+      question: `Which of the following summaries best matches the content of the document?`,
+      options,
+      correctAnswer: correct
+    });
+  }
+
+  return questions;
+};
+
+const parseJson = (response, expectedType) => {
+  const cleaned = response.replace(/```json\n?/ig, '').replace(/```\n?/g, '').trim();
+  const parsed = JSON.parse(cleaned);
+  if (expectedType === 'quiz') {
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      throw new Error('Invalid quiz structure from AI');
+    }
+    return parsed;
+  }
+  if (expectedType === 'flashcards') {
+    if (!parsed || typeof parsed !== 'object' || !Array.isArray(parsed.flashcards)) {
+      throw new Error('Invalid flashcards structure from AI');
+    }
+    return parsed;
+  }
+  return parsed;
+};
+
+const useAI = () => !!genAI;
 
 export const generateAIQuiz = async (text, numQuestions = 5) => {
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  if (!useAI()) {
+    return generateFallbackQuiz(text, numQuestions);
+  }
+
+  const model = genAI.getGenerativeModel({ model: modelName });
   const prompt = `You are an expert educator and quiz creator.
     Analyze the following text from a student's PDF document and create a high-quality multiple-choice quiz.
 
@@ -29,22 +112,20 @@ export const generateAIQuiz = async (text, numQuestions = 5) => {
   try {
     const result = await model.generateContent(prompt);
     const response = await result.response.text();
-    try {
-      const cleaned = response.replace(/```json\n?/ig, '').replace(/```\n?/g, '').trim();
-      return JSON.parse(cleaned);
-    } catch (parseError) {
-      aiLogger.error("Gemini Quiz JSON Parse Error: " + parseError + "\nRaw: " + response);
-      throw new Error("AI returned invalid JSON for quiz");
-    }
+    return parseJson(response, 'quiz');
   } catch (apiError) {
     aiLogger.error("Gemini Quiz API Error: " + apiError);
-    throw new Error("Failed to generate quiz from AI: " + apiError.message);
+    return generateFallbackQuiz(text, numQuestions);
   }
 };
 
 export const generateAIFlashcards = async (text) => {
-const model = genAI.getGenerativeModel({model: "gemini-2.0-flash"});
-    const prompt = `You are an expert AI tutor and study guide creator.
+  if (!useAI()) {
+    return generateFallbackFlashcards(text);
+  }
+
+  const model = genAI.getGenerativeModel({ model: modelName });
+  const prompt = `You are an expert AI tutor and study guide creator.
     Analyze the following text from a student's PDF document and extract the most important information into a set of high-quality Flashcards.
     
     Instructions:
@@ -66,31 +147,12 @@ const model = genAI.getGenerativeModel({model: "gemini-2.0-flash"});
     Text:
     ${text.slice(0, 15000)}`;
 
-    try {
-        const result = await model.generateContent(prompt);
-        const response = await result.response.text();
-
-        try {
-            const cleaned = response.replace(/```json\n?/ig, '').replace(/```\n?/g, '').trim();
-            return JSON.parse(cleaned);
-        } catch (parseError) {
-            aiLogger.error("Gemini JSON Parse Error: " + parseError + "\nRaw AI Response: " + response);
-            return {
-                summary: "AI generated invalid data.",
-                flashcards: [
-                    { question: "Why did this happen?", answer: "The AI did not output valid JSON format." },
-                    { question: "What should I do?", answer: "Try generating flashcards again." }
-                ]
-            };
-        }
-    } catch (apiError) {
-        aiLogger.error("Gemini API Request Error: " + apiError);
-        return {
-            summary: "AI analysis failed due to server error.",
-            flashcards: [
-                { question: "Why did flashcard generation fail?", answer: apiError.message },
-                { question: "What should I do now?", answer: "Try again later or check API limits." }
-            ]
-        };
-    }
+  try {
+    const result = await model.generateContent(prompt);
+    const response = await result.response.text();
+    return parseJson(response, 'flashcards');
+  } catch (apiError) {
+    aiLogger.error("Gemini Flashcards API Error: " + apiError);
+    return generateFallbackFlashcards(text);
+  }
 };

@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export const generateAIQuiz = async (text, numQuestions = 5) => {
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
   const prompt = `You are an expert educator and quiz creator.
     Analyze the following text from a student's PDF document and create a high-quality multiple-choice quiz.
 
@@ -66,7 +66,7 @@ export const generateAIQuiz = async (text, numQuestions = 5) => {
 };
 
 export const generateAIFlashcards = async (text) => {
-const model = genAI.getGenerativeModel({model: "gemini-2.0-flash"});
+const model = genAI.getGenerativeModel({model: "gemini-2.5-flash-lite"});
     const prompt = `You are an expert AI tutor and study guide creator.
     Analyze the following text from a student's PDF document and extract the most important information into a set of high-quality Flashcards.
     

@@ -40,6 +40,7 @@ const createLogger = (filename, level = 'info') =>
 
 export const authLogger = createLogger('auth.log');
 export const errorLogger = createLogger('error.log','error');
+export const aiLogger = createLogger('ai.log');
 
 export const combinedLogger = winston.createLogger({
     level: "info",

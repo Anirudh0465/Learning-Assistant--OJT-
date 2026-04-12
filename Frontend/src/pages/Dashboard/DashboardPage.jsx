@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../utiles/axiosInstance';
 import { toast } from 'react-hot-toast';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
@@ -55,9 +55,9 @@ const DashboardPage = () => {
         }
         
         const [docsRes, flashRes, quizRes] = await Promise.all([
-          axios.get('http://localhost:3400/api/documents', { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get('http://localhost:3400/api/flashcards', { headers: { Authorization: `Bearer ${token}` } }).catch(() => ({ data: [] })),
-          axios.get('http://localhost:3400/api/quizzes', { headers: { Authorization: `Bearer ${token}` } }).catch(() => ({ data: [] }))
+          axiosInstance.get('/documents'),
+          axiosInstance.get('/flashcards').catch(() => ({ data: [] })),
+          axiosInstance.get('/quizzes').catch(() => ({ data: [] }))
         ]);
         
         setDocuments(docsRes.data);
@@ -88,10 +88,9 @@ const DashboardPage = () => {
       setIsUploading(true);
       const token = localStorage.getItem('token');
       
-      const response = await axios.post('http://localhost:3400/api/documents/upload', formData, {
+      const response = await axiosInstance.post('/documents/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}` 
         }
       });
 
@@ -117,9 +116,7 @@ const DashboardPage = () => {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:3400/api/documents/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await axiosInstance.delete(`/documents/${id}`);
       toast.success('Document deleted successfully');
       setDocuments(prev => prev.filter(doc => doc._id !== id));
       if (pdfUrl && documents.find(d => d._id === id)?.fileUrl === pdfUrl) setPdfUrl(null);

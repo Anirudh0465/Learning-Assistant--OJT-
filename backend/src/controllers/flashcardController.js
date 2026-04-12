@@ -2,6 +2,7 @@ import Flashcard from '../models/FlashCards.js';
 import Document from '../models/Document.js'
 import { extractTextFromBuffer } from '../utils/pdfParser.js';
 import { generateAIFlashcards } from '../services/aiService.js';
+import { errorLogger } from '../utils/logger.js';
 import axios from "axios";
 
 export const createFlashcards = async (req,res) => {
@@ -36,7 +37,7 @@ export const createFlashcards = async (req,res) => {
         res.status(201).json({ summary, flashcards: savedCards });
 
     }catch(error){
-        console.error("Flashcard generation failed:", error);
+        errorLogger.error("Flashcard generation failed: " + error);
         res.status(500).json({ message: "Flashcard generation failed"});
     }
 };

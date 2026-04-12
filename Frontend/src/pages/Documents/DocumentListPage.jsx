@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../utiles/axiosInstance';
 import { toast } from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
@@ -38,8 +38,8 @@ const DocumentListPage = () => {
           return;
         }
         const [docsRes, flashRes] = await Promise.all([
-          axios.get('http://localhost:3400/api/documents', { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get('http://localhost:3400/api/flashcards', { headers: { Authorization: `Bearer ${token}` } }).catch(() => ({ data: [] }))
+          axiosInstance.get('/documents'),
+          axiosInstance.get('/flashcards').catch(() => ({ data: [] }))
         ]);
         
         const docs = docsRes.data || [];
@@ -81,10 +81,9 @@ const DocumentListPage = () => {
       setIsUploading(true);
       const token = localStorage.getItem('token');
       
-      const response = await axios.post('http://localhost:3400/api/documents/upload', formData, {
+      const response = await axiosInstance.post('/documents/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}` 
         }
       });
 
@@ -107,9 +106,7 @@ const DocumentListPage = () => {
       setGeneratingFor(documentId);
       const token = localStorage.getItem('token');
       
-      await axios.post(`http://localhost:3400/api/flashcards/generate/${documentId}`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await axiosInstance.post(`/flashcards/generate/${documentId}`);
       
       toast.success('✨ AI Flashcards generated successfully! Go to the Flashcards tab to study them.', {
         duration: 4000
@@ -127,9 +124,7 @@ const DocumentListPage = () => {
       setGeneratingQuizFor(documentId);
       const token = localStorage.getItem('token');
       
-      const response = await axios.post(`http://localhost:3400/api/quizzes/generate/document/${documentId}`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await axiosInstance.post(`/quizzes/generate/document/${documentId}`);
       
       toast.success('✨ AI Quiz generated successfully!', {
         duration: 4000

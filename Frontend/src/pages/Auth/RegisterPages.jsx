@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import { useAuth } from '../../context/AuthContext';
 import { Mail, Lock, User, ArrowRight, Sparkles } from 'lucide-react';
 
 const RegisterPages = () => {
@@ -8,6 +8,7 @@ const RegisterPages = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { register } = useAuth();
 
   React.useEffect(() => {
     if (localStorage.getItem('token')) {
@@ -25,20 +26,12 @@ const RegisterPages = () => {
     setError('');
 
     try {
-      const res = await axios.post('http://localhost:3400/api/auth/signup', formData);
-
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
-
+      await register(formData.name, formData.email, formData.password);
       navigate('/dashboard');
     } catch (err) {
-      if (err.response && err.response.data.message) {
-        setError(err.response.data.message);
-        if (err.response.data.message.includes('already exists')) {
-          alert("User already exists with a different password. Please login.");
-        }
-      } else {
-        setError('Registration failed. Please try again.');
+      setError(err.message || 'Registration failed. Please try again.');
+      if (err.message && err.message.includes('already exists')) {
+        alert("User already exists with a different password. Please login.");
       }
     } finally {
       setLoading(false);

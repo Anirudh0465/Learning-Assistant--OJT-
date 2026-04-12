@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../utiles/axiosInstance';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { 
   CheckCircle,
@@ -30,9 +30,7 @@ export const QuizTakePage = () => {
         const token = localStorage.getItem('token');
         if (!token) return navigate('/login');
         
-        const response = await axios.get(`http://localhost:3400/api/quizzes/${quizId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await axiosInstance.get(`/quizzes/${quizId}`);
         setQuiz(response.data);
       } catch (error) {
         console.error('Failed to fetch quiz', error);
@@ -74,11 +72,7 @@ export const QuizTakePage = () => {
       // Build answers array matching the order of questions
       const answersArray = quiz.questions.map((_, i) => selectedAnswers[i] || null);
       
-      const response = await axios.post(
-        `http://localhost:3400/api/quizzes/${quizId}/submit`,
-        { answers: answersArray },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await axiosInstance.post(`/quizzes/${quizId}/submit`, { answers: answersArray });
       
       setResult(response.data); // { score, total }
     } catch (error) {

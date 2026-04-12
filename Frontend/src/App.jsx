@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import NotFoundPage from './pages/NotFoundPage';
 import LoginPages from './pages/Auth/LoginPages';
 import RegisterPages from './pages/Auth/RegisterPages';
@@ -17,17 +18,16 @@ import QuizListPage from './pages/Quizes/QuizListPage';
 import ProfilePage from './pages/Profile/ProfilePage';
 
 const App = () => {
-  const isAuthenticated = !!localStorage.getItem('token');
-
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />}
-        />
-        <Route path="/login" element={<LoginPages />} />
-        <Route path="/register" element={<RegisterPages />} />
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={<Navigate to="/dashboard" replace />}
+          />
+          <Route path="/login" element={<LoginPages />} />
+          <Route path="/register" element={<RegisterPages />} />
 
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<DashboardPage />} />
@@ -47,6 +47,7 @@ const App = () => {
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
+    </AuthProvider>
   );
 }
 

@@ -3,8 +3,9 @@ import Attempt from "../models/Attempt.js";
 import Pdf from "../models/Pdf.js";
 import Document from "../models/Document.js";
 import { generateAIQuiz } from "../services/aiService.js";
-import axios from "axios";
 import { extractTextFromBuffer } from "../utils/pdfParser.js";
+import { errorLogger } from "../utils/logger.js";
+import axios from "axios";
 
 // Generate quiz from a Pdf record (legacy)
 export const generateQuizFromPdf = async (req, res) => {
@@ -26,7 +27,7 @@ export const generateQuizFromPdf = async (req, res) => {
 
     res.json(quiz);
   } catch (err) {
-    console.error("Quiz generation from Pdf failed:", err);
+    errorLogger.error("Quiz generation from Pdf failed: " + err);
     res.status(500).json({ message: "Quiz generation failed" });
   }
 };
@@ -56,24 +57,31 @@ export const generateQuizFromDocument = async (req, res) => {
 
     res.json(quiz);
   } catch (err) {
-    console.error("Quiz generation from Document failed:", err);
+    errorLogger.error("Quiz generation from Document failed: " + err);
     res.status(500).json({ message: "Quiz generation failed" });
   }
 };
 
-export const getQuizzes = async (req, res) => {
+export const getMyQuizzes = async (req, res) => {
   try {
-    const quizzes = await Quiz.find({ user: req.user.id }).sort({ createdAt: -1 });
-    res.json(quizzes);
+    const quizzes = await Quiz.find({ user: req.user.id }).select('title source questions createdAt updatedAt');
+    res.json(quizzes.map(quiz => ({
+      _id: quiz._id,
+      title: quiz.title,
+      source: quiz.source,
+      questionCount: quiz.questions.length,
+      createdAt: quiz.createdAt,
+      updatedAt: quiz.updatedAt
+    })));
   } catch (err) {
-    console.error("Get quizzes failed:", err);
-    res.status(500).json({ message: "Failed to fetch quizzes" });
+    errorLogger.error('Get quizzes failed: ' + err);
+    res.status(500).json({ message: 'Failed to fetch quizzes' });
   }
 };
 
 export const getQuizById = async (req, res) => {
   try {
-    const quiz = await Quiz.findById(req.params.id);
+    const quiz = await Quiz.findOne({ _id: req.params.id, user: req.user.id });
 
     if (!quiz) {
       return res.status(404).json({ message: "Quiz not found" });
@@ -92,7 +100,7 @@ export const getQuizById = async (req, res) => {
 
     res.json(safeQuiz);
   } catch (err) {
-    console.error("Get quiz failed:", err);
+    errorLogger.error("Get quiz failed: " + err);
     res.status(500).json({ message: "Failed to fetch quiz" });
   }
 };
@@ -101,16 +109,24 @@ export const submitQuiz = async (req, res) => {
   try {
     const { answers } = req.body;
 
-    const quiz = await Quiz.findById(req.params.id);
+    if (!Array.isArray(answers) || answers.length === 0) {
+      return res.status(400).json({ message: "Answers must be provided as a non-empty array" });
+    }
+
+    const quiz = await Quiz.findOne({ _id: req.params.id, user: req.user.id });
 
     if (!quiz) {
       return res.status(404).json({ message: "Quiz not found" });
     }
 
+    if (!quiz.questions || quiz.questions.length === 0) {
+      return res.status(400).json({ message: "Quiz has no questions" });
+    }
+
     let score = 0;
 
     const evaluated = quiz.questions.map((q, i) => {
-      const selected = answers[i];
+      const selected = answers[i] ?? null;
       if (selected === q.correctAnswer) score++;
       return { questionId: q._id, selected, correct: q.correctAnswer };
     });
@@ -124,7 +140,7 @@ export const submitQuiz = async (req, res) => {
 
     res.json({ score, total: quiz.questions.length });
   } catch (err) {
-    console.error("Submit quiz failed:", err);
+    errorLogger.error("Submit quiz failed: " + err);
     res.status(500).json({ message: "Failed to submit quiz" });
   }
 };

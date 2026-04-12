@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../utiles/axiosInstance';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Bot, 
@@ -38,9 +38,7 @@ const QuizListPage = () => {
           return;
         }
 
-        const response = await axios.get('http://localhost:3400/api/quizzes', { 
-          headers: { Authorization: `Bearer ${token}` } 
-        });
+        const response = await axiosInstance.get('/quizzes');
 
         const formattedQuizzes = response.data.map(quiz => {
           const date = new Date(quiz.createdAt);

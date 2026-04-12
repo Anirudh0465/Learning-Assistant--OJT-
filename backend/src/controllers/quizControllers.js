@@ -16,7 +16,8 @@ export const generateQuizFromPdf = async (req, res) => {
       return res.status(404).json({ message: "PDF not found" });
     }
 
-    const questions = await generateAIQuiz(pdf.extractedText, 5);
+    const numQuestions = Math.floor(Math.random() * 11) + 30;
+    const questions = await generateAIQuiz(pdf.extractedText, numQuestions);
 
     const quiz = await Quiz.create({
       title: "AI Generated Quiz",
@@ -45,15 +46,22 @@ export const generateQuizFromDocument = async (req, res) => {
     const pdfBuffer = Buffer.from(response.data);
     const text = await extractTextFromBuffer(pdfBuffer);
 
-    const questions = await generateAIQuiz(text, 5);
+    const numQuestions = Math.floor(Math.random() * 11) + 30;
+    const questions = await generateAIQuiz(text, numQuestions);
 
-    const quiz = await Quiz.create({
-      title: document.originalName || "AI Generated Quiz",
-      user: req.user.id,
-      document: document._id,
-      source: "document",
-      questions
-    });
+    let quiz = await Quiz.findOne({ document: document._id, user: req.user.id });
+    if (quiz) {
+      quiz.questions.push(...questions);
+      await quiz.save();
+    } else {
+      quiz = await Quiz.create({
+        title: document.originalName || "AI Generated Quiz",
+        user: req.user.id,
+        document: document._id,
+        source: "document",
+        questions
+      });
+    }
 
     res.json(quiz);
   } catch (err) {
@@ -64,11 +72,12 @@ export const generateQuizFromDocument = async (req, res) => {
 
 export const getMyQuizzes = async (req, res) => {
   try {
-    const quizzes = await Quiz.find({ user: req.user.id }).select('title source questions createdAt updatedAt');
+    const quizzes = await Quiz.find({ user: req.user.id }).select('title source document questions createdAt updatedAt');
     res.json(quizzes.map(quiz => ({
       _id: quiz._id,
       title: quiz.title,
       source: quiz.source,
+      document: quiz.document,
       questionCount: quiz.questions.length,
       createdAt: quiz.createdAt,
       updatedAt: quiz.updatedAt

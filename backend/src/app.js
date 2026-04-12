@@ -3,6 +3,7 @@ import cors from "cors";
 import morgan from "morgan";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import authroutes from "./routes/authRoutes.js";
 import documentroutes from "./routes/documentRoutes.js";
 import flashcardRoutes from './routes/flashcardRoutes.js';
@@ -11,7 +12,9 @@ import quizRoutes from "./routes/quizRoutes.js";
 const app = express();
 
 // Setup morgan logging to file
-const logsDirectory = path.join(new URL('.', import.meta.url).pathname, '../logs');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const logsDirectory = path.join(__dirname, '../logs');
 if (!fs.existsSync(logsDirectory)) {
   fs.mkdirSync(logsDirectory, { recursive: true });
 }

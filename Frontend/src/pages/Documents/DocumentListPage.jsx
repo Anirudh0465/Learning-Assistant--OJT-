@@ -13,7 +13,9 @@ import {
   Copy,
   Edit,
   ChevronDown,
-  HelpCircle
+  HelpCircle,
+  Search,
+  Loader2
 } from 'lucide-react';
 
 const DocumentListPage = () => {
@@ -27,6 +29,26 @@ const DocumentListPage = () => {
   const [documents, setDocuments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Debouncing State
+  const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedTerm, setDebouncedTerm] = useState('');
+
+  useEffect(() => {
+    // Set a timer to update the debounced term after user STOPS typing for 500ms
+    const handler = setTimeout(() => {
+      setDebouncedTerm(searchTerm);
+    }, 500);
+
+    // If the user types again before 500ms, clear the previous timer and start over!
+    // This is the core magic of debouncing.
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
+
+  const filteredDocs = documents.filter(doc => 
+    doc.originalName?.toLowerCase().includes(debouncedTerm.toLowerCase())
+  );
+
+
   const user = JSON.parse(localStorage.getItem('user')) || { email: 'you@example.com' };
 
   useEffect(() => {
@@ -37,24 +59,34 @@ const DocumentListPage = () => {
           setIsLoading(false);
           return;
         }
-        const [docsRes, flashRes] = await Promise.all([
+        const [docsRes, flashRes, quizRes] = await Promise.all([
           axiosInstance.get('/documents'),
-          axiosInstance.get('/flashcards').catch(() => ({ data: [] }))
+          axiosInstance.get('/flashcards').catch(() => ({ data: [] })),
+          axiosInstance.get('/quizzes').catch(() => ({ data: [] }))
         ]);
         
         const docs = docsRes.data || [];
         const cards = flashRes.data || [];
+        const quizzes = quizRes.data || [];
         
-        const counts = cards.reduce((acc, card) => {
+        const flashCounts = cards.reduce((acc, card) => {
           if (card.document) {
             acc[card.document] = (acc[card.document] || 0) + 1;
+          }
+          return acc;
+        }, {});
+
+        const quizCounts = quizzes.reduce((acc, quiz) => {
+          if (quiz.document) {
+            acc[quiz.document] = (acc[quiz.document] || 0) + 1;
           }
           return acc;
         }, {});
         
         const enrichedDocs = docs.map(doc => ({
           ...doc,
-          flashcardCount: counts[doc._id] || 0
+          flashcardCount: flashCounts[doc._id] || 0,
+          quizSectionsCount: quizCounts[doc._id] || 0
         }));
         
         setDocuments(enrichedDocs);
@@ -71,6 +103,15 @@ const DocumentListPage = () => {
 
     if (file.type !== 'application/pdf') {
       toast.error('Please upload a PDF file');
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+
+    // Check if a document with the same name already exists in the local state
+    const isDuplicate = documents.some(doc => doc.originalName === file.name);
+    if (isDuplicate) {
+      toast.error('File already exists', { position: 'top-center' }); // Pop up message 
+      if (fileInputRef.current) fileInputRef.current.value = '';
       return;
     }
 
@@ -108,7 +149,8 @@ const DocumentListPage = () => {
       
       await axiosInstance.post(`/flashcards/generate/${documentId}`);
       
-      toast.success('✨ AI Flashcards generated successfully! Go to the Flashcards tab to study them.', {
+      toast.success('Flashcards generated', {
+        position: 'bottom-center',
         duration: 4000
       });
     } catch (error) {
@@ -126,7 +168,8 @@ const DocumentListPage = () => {
       
       const response = await axiosInstance.post(`/quizzes/generate/document/${documentId}`);
       
-      toast.success('✨ AI Quiz generated successfully!', {
+      toast.success('Quizzes generated', {
+        position: 'bottom-center',
         duration: 4000
       });
       
@@ -256,13 +299,29 @@ const DocumentListPage = () => {
             </button>
           </div>
 
+          <div className="flex items-center gap-4 bg-[#22222a] border border-gray-800 rounded-xl px-4 py-3 mb-8 shadow-sm focus-within:border-emerald-500/50 transition-colors">
+            <Search className="w-5 h-5 text-gray-500" />
+            <input 
+              type="text" 
+              placeholder="Search documents by title... (Protected by Debouncing)"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="bg-transparent border-none outline-none text-white w-full placeholder-gray-600 font-medium"
+            />
+            {/* Show a cool spinning loader specifically when debouncing is holding back the update! */}
+            {searchTerm !== debouncedTerm && <Loader2 className="w-4 h-4 text-emerald-500 animate-spin" />}
+          </div>
+
           {isLoading && <p className="text-gray-400 mb-6 font-medium">Loading documents...</p>}
           {!isLoading && documents.length === 0 && (
             <p className="text-gray-400 mb-6 font-medium">No documents uploaded yet. Start by uploading a PDF!</p>
           )}
+          {!isLoading && documents.length > 0 && filteredDocs.length === 0 && (
+            <p className="text-gray-400 mb-6 font-medium">No documents match your search.</p>
+          )}
 
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-            {documents.map((doc) => (
+            {filteredDocs.map((doc) => (
               <div key={doc._id} className="bg-[#22222a] border border-gray-800/80 rounded-2xl p-6 shadow-sm hover:border-gray-700 transition-colors">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-4">
@@ -282,7 +341,7 @@ const DocumentListPage = () => {
                     </Link>
                     <Link to="/quizzes" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-fuchsia-500/30 bg-fuchsia-500/10 text-fuchsia-400 text-[11px] uppercase tracking-wider font-semibold hover:bg-fuchsia-500/20 transition-colors">
                       <Edit className="w-3.5 h-3.5" />
-                      0 Quizzes
+                      {doc.quizSectionsCount || 0} Quizzes
                     </Link>
                   </div>
                 </div>

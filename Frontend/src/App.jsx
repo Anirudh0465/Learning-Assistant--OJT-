@@ -17,9 +17,12 @@ import { QuizResultpage as QuizResultPage } from './pages/Quizes/QuizResultpage'
 import QuizListPage from './pages/Quizes/QuizListPage';
 import ProfilePage from './pages/Profile/ProfilePage';
 
+import { Toaster } from 'react-hot-toast';
+
 const App = () => {
   return (
     <AuthProvider>
+      <Toaster position="top-center" />
       <Router>
         <Routes>
           <Route

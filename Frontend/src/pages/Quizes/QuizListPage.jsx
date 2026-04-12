@@ -46,7 +46,7 @@ const QuizListPage = () => {
             id: quiz._id,
             title: quiz.title || 'AI Generated Quiz',
             created: date.toLocaleDateString('en-GB') + ', ' + date.toLocaleTimeString('en-GB'),
-            questions: quiz.questions?.length || 0,
+            questions: quiz.questionCount || 0,
             progress: 0 
           };
         });

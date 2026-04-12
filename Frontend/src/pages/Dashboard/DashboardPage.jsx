@@ -316,31 +316,40 @@ const DashboardPage = () => {
               )}
             </div>
           </div>
-          {/* PDF Viewer Section */}
-          {pdfUrl && (
-            <div className="bg-[#2a2a35] rounded-2xl border border-gray-800/80 overflow-hidden shadow-sm mt-8 p-6 flex flex-col items-center">
-              <h2 className="text-xl font-semibold text-gray-100 mb-4 w-full border-b border-gray-800/80 pb-4">Document Viewer</h2>
-              <div className="w-full max-w-4xl bg-white/5 p-4 rounded-xl flex justify-center overflow-auto max-h-[800px]">
-                <Document 
-                  file={pdfUrl} 
-                  onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-                  className="flex flex-col gap-4"
-                >
-                  {Array.from(new Array(numPages), (el, index) => (
-                    <Page 
-                      key={`page_${index + 1}`} 
-                      pageNumber={index + 1} 
-                      renderTextLayer={false} 
-                      renderAnnotationLayer={false}
-                      className="shadow-lg rounded-md"
-                      width={800}
-                    />
-                  ))}
-                </Document>
-              </div>
-            </div>
-          )}
         </div>
+
+        {/* Full-Screen PDF Viewer Modal */}
+        {pdfUrl && (
+          <div className="fixed inset-0 z-50 bg-[#0f0f13] flex flex-col overflow-hidden">
+            <div className="h-20 border-b border-gray-800 flex items-center justify-between px-8 shrink-0 bg-[#1a1a21] shadow-2xl">
+              <h2 className="text-2xl tracking-tight font-semibold text-[#f1f1f1]">Document Viewer</h2>
+              <button 
+                onClick={() => setPdfUrl(null)}
+                className="px-6 py-2.5 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white rounded-xl transition-colors font-semibold border border-red-500/20 hover:border-red-500"
+              >
+                Close Document
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto flex justify-center p-8 pb-32 w-full">
+              <Document 
+                file={pdfUrl} 
+                onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+                className="flex flex-col gap-10 w-full items-center"
+              >
+                {Array.from(new Array(numPages), (el, index) => (
+                  <Page 
+                    key={`page_${index + 1}`} 
+                    pageNumber={index + 1} 
+                    renderTextLayer={false} 
+                    renderAnnotationLayer={false}
+                    className="shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden bg-white"
+                    width={900}
+                  />
+                ))}
+              </Document>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

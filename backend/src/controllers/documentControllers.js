@@ -4,6 +4,12 @@ import Document  from "../models/Document.js";
 export const uploadDocument = async (req,res) => {
     try{
         const file = req.file;
+
+        const existingDoc = await Document.findOne({ userId: req.user.id, originalName: file.originalname });
+        if (existingDoc) {
+            return res.status(409).json({ message: "File already exists" });
+        }
+
         const result = await cloudinary.uploader.upload_stream(
             { resource_type: "raw" },
             async (error,uploaded) => {

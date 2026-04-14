@@ -21,7 +21,7 @@ if (!fs.existsSync(logsDirectory)) {
 const accessLogStream = fs.createWriteStream(path.join(logsDirectory, 'http.log'), { flags: 'a' });
 
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: true,
   credentials: true
 }));
 app.use(morgan('combined', { stream: accessLogStream }));

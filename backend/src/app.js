@@ -8,6 +8,7 @@ import authroutes from "./routes/authRoutes.js";
 import documentroutes from "./routes/documentRoutes.js";
 import flashcardRoutes from './routes/flashcardRoutes.js';
 import quizRoutes from "./routes/quizRoutes.js";
+import { getDatabaseStatus } from "./config/db.js";
 
 const app = express();
 
@@ -27,7 +28,21 @@ app.use(cors({
 
 
 app.get("/", (req, res) => {
-  res.send("Backend is running");
+  res.status(200).json({
+    message: "Backend is running",
+    health: "/health"
+  });
+});
+
+app.get("/health", (req, res) => {
+  const db = getDatabaseStatus();
+  const isHealthy = db.state === 'connected';
+
+  res.status(isHealthy ? 200 : 503).json({
+    status: isHealthy ? 'ok' : 'degraded',
+    uptimeSeconds: Math.floor(process.uptime()),
+    db
+  });
 });
 
 app.use(morgan('combined', { stream: accessLogStream }));

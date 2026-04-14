@@ -24,6 +24,12 @@ app.use(cors({
   origin: true,
   credentials: true
 }));
+
+
+app.get("/", (req, res) => {
+  res.send("Backend is running");
+});
+
 app.use(morgan('combined', { stream: accessLogStream }));
 app.use(morgan('dev'));
 app.use(express.json());

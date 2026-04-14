@@ -17,7 +17,7 @@ connectDBWithRetry();
 
 const PORT = Number(process.env.PORT) || 5000;
 
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, '::', () => {
   const dbStatus = getDatabaseStatus();
   authLogger.info(`Server running on port ${PORT} (db: ${dbStatus.state})`);
   console.log(`Server running on port ${PORT}`);

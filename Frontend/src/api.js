@@ -1,4 +1,5 @@
+import API_BASE_URL from './utiles/apiPath';
 export const API_URLS = {
-  login: 'http://localhost:3400/api/auth/login',
-  signup: 'http://localhost:3400/api/auth/signup',
+  login: `${API_BASE_URL}/auth/login`,
+  signup: `${API_BASE_URL}/auth/signup`,
 };

@@ -1,11 +1,9 @@
-import axios from 'axios';
-
-const API_BASE_URL = 'http://localhost:3400/api/auth';
+import axiosInstance from '../utiles/axiosInstance';
 
 export const authService = {
   login: async (email, password) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/login`, { email, password });
+      const response = await axiosInstance.post('/auth/login', { email, password });
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -18,7 +16,7 @@ export const authService = {
 
   register: async (name, email, password) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/signup`, { name, email, password });
+      const response = await axiosInstance.post('/auth/signup', { name, email, password });
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));

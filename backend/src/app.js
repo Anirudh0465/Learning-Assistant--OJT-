@@ -8,7 +8,9 @@ import authroutes from "./routes/authRoutes.js";
 import documentroutes from "./routes/documentRoutes.js";
 import flashcardRoutes from './routes/flashcardRoutes.js';
 import quizRoutes from "./routes/quizRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
 import { getDatabaseStatus } from "./config/db.js";
+import compression from "compression";
 
 const app = express();
 
@@ -48,10 +50,12 @@ app.get("/health", (req, res) => {
 app.use(morgan('combined', { stream: accessLogStream }));
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(compression()); // Compress all HTTP responses
 
 app.use("/api/auth", authroutes);
 app.use('/api/documents', documentroutes);
 app.use('/api/flashcards', flashcardRoutes);
 app.use("/api/quizzes", quizRoutes);
+app.use("/api/chat", chatRoutes);
 
 export default app;

@@ -12,6 +12,7 @@
     "axios": "^1.13.6",
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.9.0",
+    "compression": "^1.8.1",
     "cors": "^2.8.6",
     "dotenv": "^16.6.1",
     "express": "^5.2.1",
@@ -22,6 +23,7 @@
     "multer": "^2.1.1",
     "pdf-parse": "^1.1.4",
     "pdfjs-dist": "^5.5.207",
+    "socket.io": "^4.8.3",
     "winston": "^3.19.0"
   },
   "devDependencies": {

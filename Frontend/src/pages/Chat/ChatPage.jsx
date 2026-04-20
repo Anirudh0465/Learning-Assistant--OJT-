@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axiosInstance from '../../utiles/axiosInstance';
+import API_BASE_URL from '../../utiles/apiPath';
 import { Link, useNavigate } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import { 
   Bot, 
   LayoutDashboard, 
@@ -10,16 +12,22 @@ import {
   Bell, 
   LogOut,
   ChevronDown,
-  CheckCircle,
   HelpCircle,
-  MessageCircle
+  MessageCircle,
+  Send,
+  Loader2
 } from 'lucide-react';
 
-const QuizListPage = () => {
+const ChatPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
-
   const user = JSON.parse(localStorage.getItem('user')) || { email: 'you@example.com' };
+  
+  const [messages, setMessages] = useState([]);
+  const [inputText, setInputText] = useState('');
+  const [socket, setSocket] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const messagesEndRef = useRef(null);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -27,40 +35,63 @@ const QuizListPage = () => {
     navigate('/login');
   };
 
-  const [quizzes, setQuizzes] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    // Determine socket URL from API string
+    const socketUrl = API_BASE_URL.replace(/\/api\/?$/, '');
+    const newSocket = io(socketUrl);
+    setSocket(newSocket);
+
+    // Setup listeners
+    newSocket.on('receiveMessage', (message) => {
+      // Socket.io sends the same message to sender too. We don't want duplicates if we already know about it,
+      // but waiting for the socket response is better for guaranteed delivery sync.
+      setMessages((prev) => {
+        // Prevent duplicate appending if the socket connection fired twice for same object
+        if (prev.find(m => m._id === message._id)) return prev;
+        return [...prev, message];
+      });
+    });
+
+    return () => newSocket.close();
+  }, []);
 
   useEffect(() => {
-    const fetchQuizzes = async () => {
+    const fetchHistory = async () => {
       try {
         const token = localStorage.getItem('token');
-        if (!token) {
-          setIsLoading(false);
-          return;
-        }
+        if (!token) return navigate('/login');
 
-        const response = await axiosInstance.get('/quizzes');
-
-        const formattedQuizzes = response.data.map(quiz => {
-          const date = new Date(quiz.createdAt);
-          return {
-            id: quiz._id,
-            title: quiz.title || 'AI Generated Quiz',
-            created: date.toLocaleDateString('en-GB') + ', ' + date.toLocaleTimeString('en-GB'),
-            questions: quiz.questionCount || 0,
-            progress: 0 
-          };
-        });
-
-        setQuizzes(formattedQuizzes);
+        const response = await axiosInstance.get('/chat/history');
+        setMessages(response.data);
       } catch (error) {
-        console.error('Failed to fetch quizzes:', error);
+        console.error('Failed to fetch chat history', error);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchQuizzes();
-  }, []);
+    fetchHistory();
+  }, [navigate]);
+
+  // Auto-scroll
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if (!inputText.trim() || !socket || !user._id) return;
+
+    socket.emit('sendMessage', {
+      senderId: user._id,
+      content: inputText.trim()
+    });
+    
+    setInputText('');
+  };
 
   return (
     <div className="min-h-screen flex bg-[#1a1a21] text-white font-sans">
@@ -87,11 +118,11 @@ const QuizListPage = () => {
               <Layers className="w-5 h-5" />
               <span className="font-medium text-[15px]">Flashcards</span>
             </Link>
-            <Link to="/quizzes" className="flex items-center gap-3 px-4 py-3 bg-[#2a3f36] text-emerald-400 rounded-xl transition-colors">
+            <Link to="/quizzes" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
               <HelpCircle className="w-5 h-5" />
               <span className="font-medium text-[15px]">Quizzes</span>
             </Link>
-            <Link to="/chat" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
+            <Link to="/chat" className="flex items-center gap-3 px-4 py-3 bg-[#2a3f36] text-emerald-400 rounded-xl transition-colors">
               <MessageCircle className="w-5 h-5" />
               <span className="font-medium text-[15px]">Live Chat</span>
             </Link>
@@ -149,37 +180,58 @@ const QuizListPage = () => {
           </div>
         </header>
 
-        {/* Quizzes Content */}
-        <div className="flex-1 overflow-y-auto p-10 bg-[#1a1a21]">
-          <h1 className="text-[22px] font-semibold tracking-tight text-[#f1f1f1] mb-8">All Quizzes</h1>
+        {/* Chat Content */}
+        <div className="flex-1 overflow-hidden flex transform flex-col p-8 pb-10 bg-[#1a1a21]">
+          <h1 className="text-[22px] font-semibold tracking-tight text-[#f1f1f1] mb-6 shrink-0">Live Community Chat</h1>
           
-          {isLoading && <p className="text-gray-400 mb-6 font-medium">Loading your quizzes...</p>}
-          {!isLoading && quizzes.length === 0 && (
-            <p className="text-gray-400 mb-6 font-medium">No quizzes generated yet. Generate some from a document!</p>
-          )}
-
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
-            {quizzes.map((quiz) => (
-              <div key={quiz.id} className="bg-[#22222a] border border-gray-800/80 rounded-[14px] p-6 shadow-sm hover:border-gray-700 transition-colors flex flex-col justify-between">
-                <div>
-                    <h3 className="text-[17px] font-semibold text-[#f1f1f1] mb-1.5 tracking-wide">{quiz.title}</h3>
-                    <p className="text-[12px] text-[#787883] font-medium tracking-wide uppercase mb-6">CREATED: {quiz.created}</p>
-                </div>
-                
-                <div className="flex items-center justify-between mt-4">
-                  <span className="text-[15px] font-medium text-gray-400">{quiz.questions} Questions</span>
-                  <Link to={`/quizzes/${quiz.id}`} className="px-6 py-2 bg-[#8b5cf6] hover:bg-[#7c3aed] text-white text-[15px] font-semibold rounded-[8px] transition-colors shadow-lg shadow-purple-500/10 tracking-wide">
-                    Take Quiz
-                  </Link>
-                </div>
+          <div className="flex-1 overflow-y-auto bg-[#22222a] border border-gray-800/80 rounded-t-[14px] p-6 flex flex-col gap-4 shadow-sm relative">
+            {isLoading && (
+               <div className="absolute inset-0 flex items-center justify-center">
+                 <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
+               </div>
+            )}
+            {!isLoading && messages.length === 0 && (
+              <div className="flex-1 flex flex-col items-center justify-center text-gray-500 opacity-80">
+                <MessageCircle className="w-12 h-12 mb-3" />
+                <p>No messages yet. Be the first to say hi!</p>
               </div>
-            ))}
+            )}
+            {!isLoading && messages.map((msg, index) => {
+              const isMine = msg.sender?._id === user._id || msg.sender === user._id;
+              const senderName = msg.sender?.username || msg.sender?.name || msg.sender?.email?.split('@')[0] || 'Anonymous';
+              
+              return (
+                <div key={index} className={`flex flex-col max-w-[70%] ${isMine ? 'self-end items-end' : 'self-start items-start'} transition-all duration-300`}>
+                  <span className="text-[11px] text-[#787883] font-medium tracking-wide mb-1.5 mx-1">{isMine ? 'Me' : senderName}</span>
+                  <div className={`px-5 py-3.5 rounded-2xl ${isMine ? 'bg-emerald-500 text-white rounded-br-sm shadow-emerald-500/10 shadow-lg' : 'bg-[#2a2a35] text-gray-200 border border-gray-700/50 rounded-bl-sm'}`}>
+                    <p className="text-[15px] leading-relaxed break-words">{msg.content}</p>
+                  </div>
+                </div>
+              );
+            })}
+            <div ref={messagesEndRef} className="pb-2" />
           </div>
           
+          <form onSubmit={handleSendMessage} className="bg-[#22222a] border-x border-b border-gray-800/80 rounded-b-[14px] p-4 flex gap-3 shrink-0 items-center justify-center relative shadow-lg">
+             <input
+               type="text"
+               value={inputText}
+               onChange={(e) => setInputText(e.target.value)}
+               placeholder="Type your message..."
+               className="flex-1 bg-[#1a1a21] border border-gray-700/50 rounded-[10px] px-5 py-3 text-[#f1f1f1] outline-none focus:border-emerald-500/50 transition-colors shadow-inner"
+             />
+             <button
+               type="submit"
+               disabled={!inputText.trim()}
+               className="bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 disabled:hover:bg-emerald-500 text-white p-3.5 rounded-[10px] transition-all shadow-lg shadow-emerald-500/20 active:scale-95 flex items-center justify-center shrink-0"
+             >
+               <Send className="w-5 h-5 -ml-0.5 mt-0.5" />
+             </button>
+          </form>
         </div>
       </main>
     </div>
   );
 };
 
-export default QuizListPage;
+export default ChatPage;

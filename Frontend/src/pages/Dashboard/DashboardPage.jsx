@@ -23,7 +23,8 @@ import {
   ChevronDown,
   Search,
   Trash2,
-  HelpCircle
+  HelpCircle,
+  MessageCircle
 } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 
@@ -159,6 +160,10 @@ const DashboardPage = () => {
           <Link to="/quizzes" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
             <HelpCircle className="w-5 h-5" />
             <span className="font-medium">Quizzes</span>
+          </Link>
+          <Link to="/chat" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
+            <MessageCircle className="w-5 h-5" />
+            <span className="font-medium">Live Chat</span>
           </Link>
           <Link to="/profile" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
             <User className="w-5 h-5" />

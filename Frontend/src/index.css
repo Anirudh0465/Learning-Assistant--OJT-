@@ -11,7 +11,36 @@
 @layer base{
   font-family: var(--font-display);
 
+body, html {
+  margin: 0;
+  padding: 0;
+  background-color: #1a1a21; /* Dark theme background */
 }
-body{
-  background-color: #fcfcfc;
+
+/* Custom Premium Scrollbar Styles for Dark Theme */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a21; /* Matches main bg */
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3f3f4e; /* Slightly lighter shade for thumb visibility */
+  border-radius: 8px;
+  border: 2px solid #1a1a21; /* Adds padding effect */
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #10b981; /* Interactive Emerald green hover */
+}
+
+/* Firefox Support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #3f3f4e #1a1a21;
 }

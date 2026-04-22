@@ -8,16 +8,18 @@
   --color-primary:#FF9324;
 
 }
-@layer base{
-  font-family: var(--font-display);
+@layer base {
+  body {
+    font-family: var(--font-display);
+  }
 
-body, html {
-  margin: 0;
-  padding: 0;
-  background-color: #1a1a21; /* Dark theme background */
+  body, html {
+    margin: 0;
+    padding: 0;
+    background-color: #1a1a21;
+  }
 }
 
-/* Custom Premium Scrollbar Styles for Dark Theme */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;

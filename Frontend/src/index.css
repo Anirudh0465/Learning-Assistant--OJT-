@@ -1,48 +1,52 @@
+
+
+
 @import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&family=Oswald:wght@200..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
 
 @import "tailwindcss";
 
-@theme{
-  --font-display:"Urbanist",sans-serif;
-  --breakpoint-3xl:1920px;
-  --color-primary:#FF9324;
-
+@theme {
+  --font-display: "Urbanist", sans-serif;
+  --breakpoint-3xl: 1920px;
+  --color-primary: #FF9324;
 }
+
 @layer base {
-  body {
-    font-family: var(--font-display);
-  }
+  font-family: var(--font-display);
 
   body, html {
     margin: 0;
     padding: 0;
-    background-color: #1a1a21;
+    background-color: #1a1a21; /* Dark theme background */
+    scroll-behavior: smooth;
   }
-}
 
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
+  /* Custom Premium Scrollbar Styles for Dark Theme */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
 
-::-webkit-scrollbar-track {
-  background: #1a1a21; /* Matches main bg */
-  border-radius: 8px;
-}
+  ::-webkit-scrollbar-track {
+    background: #1a1a21;
+    border-radius: 8px;
+  }
 
-::-webkit-scrollbar-thumb {
-  background: #3f3f4e; /* Slightly lighter shade for thumb visibility */
-  border-radius: 8px;
-  border: 2px solid #1a1a21; /* Adds padding effect */
-  transition: all 0.3s ease;
-}
+  ::-webkit-scrollbar-thumb {
+    background: #3f3f4e;
+    border-radius: 8px;
+    border: 2px solid #1a1a21;
+    transition: all 0.3s ease;
+  }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #10b981; /* Interactive Emerald green hover */
-}
+  ::-webkit-scrollbar-thumb:hover {
+    background: #10b981;
+  }
 
-/* Firefox Support */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #3f3f4e #1a1a21;
-}
+  /* Firefox Support */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #3f3f4e #1a1a21;
+  }
+} /* ✅ closing brace added */
+

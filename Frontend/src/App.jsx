@@ -20,16 +20,15 @@ import ChatPage from './pages/Chat/ChatPage';
 
 import { Toaster } from 'react-hot-toast';
 
+import LandingPage from './pages/Landing/LandingPage';
+
 const App = () => {
   return (
     <AuthProvider>
       <Toaster position="top-center" />
       <Router>
         <Routes>
-          <Route
-            path="/"
-            element={<Navigate to="/dashboard" replace />}
-          />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPages />} />
           <Route path="/register" element={<RegisterPages />} />
 

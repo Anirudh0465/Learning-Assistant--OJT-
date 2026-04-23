@@ -156,3 +156,38 @@ export const generateAIFlashcards = async (text) => {
     return generateFallbackFlashcards(text);
   }
 };
+
+export const askDocumentQuestion = async (text, question) => {
+  if (!useAI()) {
+    return { answer: "AI is currently disabled or unavailable. Cannot answer questions." };
+  }
+
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+  const prompt = `You are an expert AI tutor. 
+    Analyze the following text from a student's PDF document and answer the user's question strictly based on the text.
+    
+    Instructions:
+    1. Base your answer entirely on the provided text.
+    2. If the answer is not contained within the text, politely state that the document does not contain the answer.
+    3. Be clear, concise, and helpful.
+    
+    Return ONLY a valid JSON object in this exact format:
+    {
+      "answer": "Your detailed answer here"
+    }
+
+    User Question: ${question}
+
+    Text:
+    ${text.slice(0, 15000)}`;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const response = await result.response.text();
+    const cleaned = response.replace(/```json\n?/ig, '').replace(/```\n?/g, '').trim();
+    return JSON.parse(cleaned);
+  } catch (apiError) {
+    aiLogger.error("Gemini Chat API Error: " + apiError);
+    return { answer: "Sorry, I encountered an error while trying to generate the answer." };
+  }
+};

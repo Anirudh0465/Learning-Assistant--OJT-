@@ -17,6 +17,7 @@ import { QuizResultpage as QuizResultPage } from './pages/Quizes/QuizResultpage'
 import QuizListPage from './pages/Quizes/QuizListPage';
 import ProfilePage from './pages/Profile/ProfilePage';
 import ChatPage from './pages/Chat/ChatPage';
+import DocumentChatPage from './pages/DocumentChat/DocumentChatPage';
 
 import { Toaster } from 'react-hot-toast';
 
@@ -36,6 +37,7 @@ const App = () => {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/documents" element={<DocumentListPage />} />
           <Route path="/documents/:id" element={<DocumentDetailPage />} />
+          <Route path="/document-chat" element={<DocumentChatPage />} />
           <Route path="/flashcards" element={<FlashcardsListPage />} />
           <Route path="/flashcards/:documentId" element={<FlashcardStudyPage />} />
           <Route path="/quizzes" element={<QuizListPage />} />

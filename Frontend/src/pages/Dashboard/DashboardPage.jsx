@@ -27,6 +27,7 @@ import {
   MessageCircle
 } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
+import Sidebar from '../../components/Sidebar';
 
 const DashboardPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -136,41 +137,7 @@ const DashboardPage = () => {
   return (
     <div className="min-h-screen flex bg-[#1a1a21] text-white font-sans">
       {/* Sidebar */}
-      <aside className="w-64 bg-[#22222a] flex flex-col border-r border-gray-800">
-        <div className="flex items-center gap-3 px-6 h-20 border-b border-gray-800">
-          <div className="bg-emerald-500 p-1.5 rounded-lg">
-            <Bot className="w-6 h-6 text-white" />
-          </div>
-          <span className="font-semibold text-lg tracking-wide">AI Learning Assistant</span>
-        </div>
-        
-        <nav className="flex-1 py-6 px-4 space-y-2">
-          <Link to="/dashboard" className="flex items-center gap-3 px-4 py-3 bg-[#2a3f36] text-emerald-400 rounded-xl transition-colors">
-            <LayoutDashboard className="w-5 h-5" />
-            <span className="font-medium">Dashboard</span>
-          </Link>
-          <Link to="/documents" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
-            <FileText className="w-5 h-5" />
-            <span className="font-medium">Documents</span>
-          </Link>
-          <Link to="/flashcards" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
-            <Layers className="w-5 h-5" />
-            <span className="font-medium">Flashcards</span>
-          </Link>
-          <Link to="/quizzes" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
-            <HelpCircle className="w-5 h-5" />
-            <span className="font-medium">Quizzes</span>
-          </Link>
-          <Link to="/chat" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
-            <MessageCircle className="w-5 h-5" />
-            <span className="font-medium">Live Chat</span>
-          </Link>
-          <Link to="/profile" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
-            <User className="w-5 h-5" />
-            <span className="font-medium">Profile</span>
-          </Link>
-        </nav>
-      </aside>
+      <Sidebar />
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col">
@@ -191,10 +158,7 @@ const DashboardPage = () => {
           </div>
 
           <div className="flex items-center gap-6">
-            <button className="relative text-gray-400 hover:text-white transition-colors">
-              <Bell className="w-6 h-6" />
-              <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-[#1a1a21] rounded-full"></span>
-            </button>
+
             <div className="relative">
               <div 
                 className="flex items-center gap-3 pl-6 border-l border-gray-800 cursor-pointer hover:bg-[#2a2a35] py-2 px-3 rounded-xl transition-colors"

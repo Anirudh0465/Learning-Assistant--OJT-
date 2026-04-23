@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axiosInstance from '../../utiles/axiosInstance';
 import { toast } from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
+import Sidebar from '../../components/Sidebar';
 import { 
   Bot, 
   LayoutDashboard, 
@@ -194,61 +195,14 @@ const DocumentListPage = () => {
   return (
     <div className="min-h-screen flex bg-[#1a1a21] text-white font-sans">
       {/* Sidebar */}
-      <aside className="w-64 bg-[#22222a] flex flex-col justify-between border-r border-gray-800 flex-shrink-0">
-        <div>
-          <div className="flex items-center gap-3 px-6 h-20 border-b border-gray-800">
-            <div className="bg-emerald-500 p-1.5 rounded-lg w-8 h-8 flex flex-shrink-0 items-center justify-center">
-              <Bot className="w-5 h-5 text-white" />
-            </div>
-            <span className="font-semibold text-[15px] tracking-wide text-gray-100">AI Learning Assistant</span>
-          </div>
-          
-          <nav className="py-6 px-4 space-y-2">
-            <Link to="/dashboard" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
-              <LayoutDashboard className="w-5 h-5" />
-              <span className="font-medium text-[15px]">Dashboard</span>
-            </Link>
-            <Link to="/documents" className="flex items-center gap-3 px-4 py-3 bg-[#2a3f36] text-emerald-400 rounded-xl transition-colors">
-              <FileText className="w-5 h-5" />
-              <span className="font-medium text-[15px]">Documents</span>
-            </Link>
-            <Link to="/flashcards" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
-              <Layers className="w-5 h-5" />
-              <span className="font-medium text-[15px]">Flashcards</span>
-            </Link>
-            <Link to="/quizzes" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
-              <HelpCircle className="w-5 h-5" />
-              <span className="font-medium text-[15px]">Quizzes</span>
-            </Link>
-            <Link to="/chat" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
-              <MessageCircle className="w-5 h-5" />
-              <span className="font-medium text-[15px]">Live Chat</span>
-            </Link>
-            <Link to="/profile" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
-              <User className="w-5 h-5" />
-              <span className="font-medium text-[15px]">Profile</span>
-            </Link>
-          </nav>
-        </div>
-
-        {/* Bottom Logout */}
-        <div className="px-4 pb-6">
-          <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors w-full text-left">
-            <LogOut className="w-5 h-5" />
-            <span className="font-medium text-[15px]">Logout</span>
-          </button>
-        </div>
-      </aside>
+      <Sidebar />
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Header */}
         <header className="h-20 flex-shrink-0 flex items-center justify-end px-8 border-b border-gray-800 bg-[#1a1a21]">
           <div className="flex items-center gap-6">
-            <button className="relative text-gray-400 hover:text-white transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-0 right-0 w-2 h-2 bg-emerald-500 border border-[#1a1a21] rounded-full"></span>
-            </button>
+
             <div className="relative">
               <div 
                 className="flex items-center gap-3 pl-6 border-l border-gray-800 cursor-pointer hover:bg-[#2a2a35] py-2 px-3 rounded-xl transition-colors"

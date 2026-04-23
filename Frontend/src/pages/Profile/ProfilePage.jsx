@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../utiles/axiosInstance';
+import Sidebar from '../../components/Sidebar';
+
 import { toast } from 'react-hot-toast';
 import { 
   Bot, LayoutDashboard, FileText, Layers, User, Bell, LogOut, ChevronDown, 
@@ -108,51 +110,7 @@ const ProfilePage = () => {
   return (
     <div className="min-h-screen flex bg-[#1a1a21] text-white font-sans">
       {/* Sidebar */}
-      <aside className="w-64 bg-[#22222a] flex flex-col justify-between border-r border-gray-800 flex-shrink-0">
-        <div>
-          <div className="flex items-center gap-3 px-6 h-20 border-b border-gray-800">
-            <div className="bg-emerald-500 p-1.5 rounded-lg w-8 h-8 flex flex-shrink-0 items-center justify-center shadow-lg shadow-emerald-500/20">
-              <Bot className="w-5 h-5 text-white" />
-            </div>
-            <span className="font-semibold text-[15px] tracking-wide text-gray-100">AI Learning Assistant</span>
-          </div>
-          
-          <nav className="py-6 px-4 space-y-2">
-            <Link to="/dashboard" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
-              <LayoutDashboard className="w-5 h-5" />
-              <span className="font-medium text-[15px]">Dashboard</span>
-            </Link>
-            <Link to="/documents" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
-              <FileText className="w-5 h-5" />
-              <span className="font-medium text-[15px]">Documents</span>
-            </Link>
-            <Link to="/flashcards" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
-              <Layers className="w-5 h-5" />
-              <span className="font-medium text-[15px]">Flashcards</span>
-            </Link>
-            <Link to="/quizzes" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
-              <HelpCircle className="w-5 h-5" />
-              <span className="font-medium text-[15px]">Quizzes</span>
-            </Link>
-            <Link to="/chat" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors">
-              <MessageCircle className="w-5 h-5" />
-              <span className="font-medium text-[15px]">Live Chat</span>
-            </Link>
-            <Link to="/profile" className="flex items-center gap-3 px-4 py-3 bg-[#2a3f36] text-emerald-400 rounded-xl transition-colors shadow-inner shadow-emerald-500/5">
-              <User className="w-5 h-5" />
-              <span className="font-medium text-[15px]">Profile</span>
-            </Link>
-          </nav>
-        </div>
-
-        {/* Bottom Logout */}
-        <div className="px-4 pb-6">
-          <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-gray-200 hover:bg-[#2a2a35] rounded-xl transition-colors w-full text-left">
-            <LogOut className="w-5 h-5" />
-            <span className="font-medium text-[15px]">Logout</span>
-          </button>
-        </div>
-      </aside>
+      <Sidebar />
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden">

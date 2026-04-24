@@ -7,14 +7,12 @@ import { errorLogger } from '../utils/logger.js';
 
 export const getChatHistory = async (req, res) => {
   try {
-    // Fetch the last 50 messages, sorted by oldest first for correct display order
     const messages = await Message.find()
       .sort({ createdAt: -1 })
       .limit(50)
-      .populate('sender', 'username email profilePicture') // Adjust fields based on User model
+      .populate('sender', 'username email profilePicture') 
       .lean();
 
-    // Reverse the array so the oldest is first, newest is last (standard chat flow)
     const formattedMessages = messages.reverse();
 
     res.status(200).json(formattedMessages);
@@ -38,12 +36,10 @@ export const askAIQuestion = async (req, res) => {
       return res.status(404).json({ error: 'Document not found' });
     }
 
-    // Download PDF and extract text
     const response = await axios({ url: document.fileUrl, method: 'GET', responseType: 'arraybuffer' });
     const pdfBuffer = Buffer.from(response.data);
     const text = await extractTextFromBuffer(pdfBuffer);
 
-    // Get answer from AI
     const aiResponse = await askDocumentQuestion(text, question);
 
     res.status(200).json(aiResponse);

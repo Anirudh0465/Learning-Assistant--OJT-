@@ -96,7 +96,7 @@ export const updateProfile = async (req, res) => {
     const userId = req.user.id;
 
     if (!name || !email) {
-      return res.status(400).json({ message: "Name and email are required" });
+      return res.status(400).json({ message: "Name or email are required" });
     }
 
     const normalizedEmail = email.toLowerCase();

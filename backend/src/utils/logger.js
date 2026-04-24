@@ -15,8 +15,6 @@ try {
     if (!fs.existsSync('./logs')) {
         fs.mkdirSync('./logs', { recursive: true });
     }
-    // Vercel deploys the logs folder, so existsSync is true, but it's still read-only!
-    // We must actually test writing a file to confirm.
     const testFile = './logs/.test_write_access';
     fs.writeFileSync(testFile, 'test');
     fs.unlinkSync(testFile);

@@ -7,7 +7,7 @@ const documentSchema = new mongoose.Schema(
             required: true,
         },
         fileUrl: String,
-         originalName: String,
+        originalName: String,
     },
     {timestamps: true}
 );

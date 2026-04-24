@@ -1,11 +1,5 @@
 import express from "express";
-import {
-  generateQuizFromPdf,
-  generateQuizFromDocument,
-  getMyQuizzes,
-  getQuizById,
-  submitQuiz
-} from "../controllers/quizControllers.js";
+import { generateQuizFromPdf , generateQuizFromDocument , getMyQuizzes , getQuizById , submitQuiz } from "../controllers/quizControllers.js";
 
 import { protect } from "../middleware/authMiddleware.js";
 

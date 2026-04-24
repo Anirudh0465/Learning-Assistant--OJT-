@@ -49,12 +49,10 @@ export const deleteDocument = async (req, res) => {
             return res.status(404).json({ message: "Document not found or unauthorized to delete" });
         }
 
-        // Cascade delete associated Flashcards
         await import("../models/FlashCards.js").then(async ({ default: Flashcard }) => {
              await Flashcard.deleteMany({ document: id });
         });
 
-        // Cascade delete associated Quizzes
         await import("../models/Quiz.js").then(async ({ default: Quiz }) => {
              await Quiz.deleteMany({ document: id });
         });

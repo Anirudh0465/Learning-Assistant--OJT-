@@ -11,10 +11,9 @@ const messageSchema = new mongoose.Schema({
     required: true
   }
 }, {
-  timestamps: true // Adds createdAt and updatedAt
+  timestamps: true
 });
 
-// Index for faster queries on chat history
 messageSchema.index({ createdAt: -1 });
 
 const Message = mongoose.model('Message', messageSchema);

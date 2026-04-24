@@ -7,7 +7,6 @@ import { extractTextFromBuffer } from "../utils/pdfParser.js";
 import { errorLogger } from "../utils/logger.js";
 import axios from "axios";
 
-// Generate quiz from a Pdf record (legacy)
 export const generateQuizFromPdf = async (req, res) => {
   try {
     const pdf = await Pdf.findOne({ _id: req.params.id, user: req.user.id });
@@ -33,7 +32,6 @@ export const generateQuizFromPdf = async (req, res) => {
   }
 };
 
-// Generate quiz from an uploaded Document (downloads PDF, extracts text)
 export const generateQuizFromDocument = async (req, res) => {
   try {
     const document = await Document.findOne({ _id: req.params.id, userId: req.user.id });

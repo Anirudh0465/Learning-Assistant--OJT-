@@ -14,7 +14,6 @@ import compression from "compression";
 
 const app = express();
 
-// Setup morgan logging to file
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const logsDirectory = path.join(__dirname, '../logs');
@@ -50,7 +49,7 @@ app.get("/health", (req, res) => {
 app.use(morgan('combined', { stream: accessLogStream }));
 app.use(morgan('dev'));
 app.use(express.json());
-app.use(compression()); // Compress all HTTP responses
+app.use(compression()); 
 
 app.use("/api/auth", authroutes);
 app.use('/api/documents', documentroutes);

@@ -9,7 +9,6 @@ import ProtectedRoute from './components/ProtectedRoute';
 // Stub imports for nested routes if they don't exist yet, to prevent app crash
 import DashboardPage from './pages/Dashboard/DashboardPage';
 import DocumentListPage from './pages/Documents/DocumentListPage';
-const DocumentDetailPage = () => <div>Document Detail</div>;
 import FlashcardsListPage from './pages/Flashcards/FlashcardListPage';
 import FlashcardStudyPage from './pages/Flashcards/FlashcardStudyPage';
 import { QuizTakePage } from './pages/Quizes/QuizTakePage';
@@ -35,8 +34,7 @@ const App = () => {
 
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/documents" element={<DocumentListPage />} />
-          <Route path="/documents/:id" element={<DocumentDetailPage />} />
+  <Route path="/documents" element={<DocumentListPage />} />
           <Route path="/document-chat" element={<DocumentChatPage />} />
           <Route path="/flashcards" element={<FlashcardsListPage />} />
           <Route path="/flashcards/:documentId" element={<FlashcardStudyPage />} />

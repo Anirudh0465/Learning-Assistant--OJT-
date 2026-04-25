@@ -1,5 +1,6 @@
 import cloudinary  from "../config/cloudinary.js";
 import Document  from "../models/Document.js";
+import { extractTextFromBuffer } from "../utils/pdfParser.js";
 
 export const uploadDocument = async (req,res) => {
     try{
@@ -8,6 +9,13 @@ export const uploadDocument = async (req,res) => {
         const existingDoc = await Document.findOne({ userId: req.user.id, originalName: file.originalname });
         if (existingDoc) {
             return res.status(409).json({ message: "File already exists" });
+        }
+
+        let extractedText = "";
+        try {
+            extractedText = await extractTextFromBuffer(file.buffer);
+        } catch(e) {
+            console.error("Text extraction failed", e);
         }
 
         const result = await cloudinary.uploader.upload_stream(
@@ -20,6 +28,7 @@ export const uploadDocument = async (req,res) => {
                     userId: req.user.id,
                     fileUrl: uploaded.secure_url,
                     originalName: file.originalname,
+                    extractedText: extractedText
                 });
                 res.json(doc);
             }
@@ -32,7 +41,9 @@ export const uploadDocument = async (req,res) => {
 
 export const getDocuments = async (req, res) => {
     try {
-        const docs = await Document.find({ userId: req.user.id }).sort({ createdAt: -1 });
+        const docs = await Document.find({ userId: req.user.id })
+            .select('-extractedText')
+            .sort({ createdAt: -1 });
         res.json(docs);
     } catch (err) {
         res.status(500).json({ message: err.message });

@@ -8,6 +8,7 @@ const documentSchema = new mongoose.Schema(
         },
         fileUrl: String,
         originalName: String,
+        extractedText: String,
     },
     {timestamps: true}
 );

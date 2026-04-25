@@ -40,9 +40,14 @@ export const generateQuizFromDocument = async (req, res) => {
       return res.status(404).json({ message: "Document not found" });
     }
 
-    const response = await axios({ url: document.fileUrl, method: "GET", responseType: "arraybuffer" });
-    const pdfBuffer = Buffer.from(response.data);
-    const text = await extractTextFromBuffer(pdfBuffer);
+    let text = document.extractedText;
+    if (!text) {
+        const response = await axios({ url: document.fileUrl, method: "GET", responseType: "arraybuffer" });
+        const pdfBuffer = Buffer.from(response.data);
+        text = await extractTextFromBuffer(pdfBuffer);
+        document.extractedText = text;
+        await document.save();
+    }
 
     const numQuestions = Math.floor(Math.random() * 11) + 30;
     const questions = await generateAIQuiz(text, numQuestions);

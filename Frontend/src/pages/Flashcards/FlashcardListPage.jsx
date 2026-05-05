@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import axiosInstance from '../../utiles/axiosInstance';
 import { Link, useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
@@ -16,6 +16,7 @@ import {
   HelpCircle,
   MessageCircle
 } from 'lucide-react';
+import { useData } from '../../context/DataContext';
 
 const FlashcardListPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -29,64 +30,40 @@ const FlashcardListPage = () => {
     navigate('/login');
   };
 
-  const [flashcardSets, setFlashcardSets] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { documents: docs, flashcards: cards, isLoading } = useData();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          setIsLoading(false);
-          return;
-        }
+  const flashcardSets = useMemo(() => {
+    if (!docs.length && !cards.length) return [];
 
-        const [docsRes, flashRes] = await Promise.all([
-          axiosInstance.get('/documents'),
-          axiosInstance.get('/flashcards').catch(() => ({ data: [] }))
-        ]);
-
-        const docs = docsRes.data || [];
-        const cards = flashRes.data || [];
-
-        const grouped = cards.reduce((acc, card) => {
-          const docId = card.document;
-          if (!docId) return acc;
-          
-          if (!acc[docId]) {
-            acc[docId] = { documentId: docId, cards: [], createdAt: card.createdAt };
-          }
-          acc[docId].cards.push(card);
-          return acc;
-        }, {});
-
-        const sets = Object.values(grouped).map((group, index) => {
-          const doc = docs.find(d => d._id === group.documentId);
-          const dummyProgress = index % 2 === 0 ? 100 : 40; 
-          
-          // Format date elegantly
-          const date = new Date(group.createdAt);
-          const formattedDate = date.toLocaleDateString('en-GB') + ', ' + date.toLocaleTimeString('en-GB');
-          
-          return {
-            id: group.documentId,
-            title: doc ? doc.originalName : 'Flashcard Set',
-            created: formattedDate,
-            cards: group.cards.length,
-            progress: dummyProgress,
-            label: dummyProgress === 100 ? '100%' : 'Progress'
-          };
-        });
-
-        setFlashcardSets(sets);
-      } catch (error) {
-        console.error('Failed to fetch flashcards data:', error);
-      } finally {
-        setIsLoading(false);
+    const grouped = cards.reduce((acc, card) => {
+      const docId = card.document;
+      if (!docId) return acc;
+      
+      if (!acc[docId]) {
+        acc[docId] = { documentId: docId, cards: [], createdAt: card.createdAt };
       }
-    };
-    fetchData();
-  }, []);
+      acc[docId].cards.push(card);
+      return acc;
+    }, {});
+
+    return Object.values(grouped).map((group, index) => {
+      const doc = docs.find(d => d._id === group.documentId);
+      const dummyProgress = index % 2 === 0 ? 100 : 40; 
+      
+      // Format date elegantly
+      const date = new Date(group.createdAt);
+      const formattedDate = date.toLocaleDateString('en-GB') + ', ' + date.toLocaleTimeString('en-GB');
+      
+      return {
+        id: group.documentId,
+        title: doc ? doc.originalName : 'Flashcard Set',
+        created: formattedDate,
+        cards: group.cards.length,
+        progress: dummyProgress,
+        label: dummyProgress === 100 ? '100%' : 'Progress'
+      };
+    });
+  }, [docs, cards]);
 
   const completedSets = flashcardSets.filter(s => s.progress === 100);
   const pendingSets = flashcardSets.filter(s => s.progress !== 100);

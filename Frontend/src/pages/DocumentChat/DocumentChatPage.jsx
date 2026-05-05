@@ -9,16 +9,16 @@ import {
   ChevronDown,
   MessageSquare,
   Send,
-  Loader2,
   FileSearch
 } from 'lucide-react';
+import { useData } from '../../context/DataContext';
 
 const DocumentChatPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user')) || { email: 'you@example.com' };
   
-  const [documents, setDocuments] = useState([]);
+  const { documents } = useData();
   const [selectedPdf, setSelectedPdf] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
   const [currentQuery, setCurrentQuery] = useState('');
@@ -32,21 +32,10 @@ const DocumentChatPage = () => {
   };
 
   useEffect(() => {
-    const fetchDocuments = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) return;
-        const res = await axiosInstance.get('/documents');
-        setDocuments(res.data);
-        if (res.data && res.data.length > 0) {
-          setSelectedPdf(res.data[0]._id);
-        }
-      } catch (error) {
-        console.error('Failed to fetch documents for chat:', error);
-      }
-    };
-    fetchDocuments();
-  }, []);
+    if (documents.length > 0 && !selectedPdf) {
+      setSelectedPdf(documents[0]._id);
+    }
+  }, [documents, selectedPdf]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

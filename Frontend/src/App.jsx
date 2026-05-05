@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { DataProvider } from './context/DataContext';
 import NotFoundPage from './pages/NotFoundPage';
 import LoginPages from './pages/Auth/LoginPages';
 import RegisterPages from './pages/Auth/RegisterPages';
@@ -25,9 +26,10 @@ import LandingPage from './pages/Landing/LandingPage';
 const App = () => {
   return (
     <AuthProvider>
-      <Toaster position="top-center" />
-      <Router>
-        <Routes>
+      <DataProvider>
+        <Toaster position="top-center" />
+        <Router>
+          <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPages />} />
           <Route path="/register" element={<RegisterPages />} />
@@ -51,6 +53,7 @@ const App = () => {
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
+    </DataProvider>
     </AuthProvider>
   );
 }

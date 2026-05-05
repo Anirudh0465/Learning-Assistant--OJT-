@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import axiosInstance from '../../utiles/axiosInstance';
 import { toast } from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
@@ -19,6 +19,7 @@ import {
   Loader2,
   MessageCircle
 } from 'lucide-react';
+import { useData } from '../../context/DataContext';
 
 const DocumentListPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -28,8 +29,8 @@ const DocumentListPage = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [generatingFor, setGeneratingFor] = useState(null);
   const [generatingQuizFor, setGeneratingQuizFor] = useState(null);
-  const [documents, setDocuments] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  
+  const { documents, flashcards, quizzes, isLoading, addDocument, refreshData } = useData();
 
   // Debouncing State
   const [searchTerm, setSearchTerm] = useState('');
@@ -50,54 +51,30 @@ const DocumentListPage = () => {
     doc.originalName?.toLowerCase().includes(debouncedTerm.toLowerCase())
   );
 
+  const enrichedDocs = useMemo(() => {
+    const flashCounts = flashcards.reduce((acc, card) => {
+      if (card.document) {
+        acc[card.document] = (acc[card.document] || 0) + 1;
+      }
+      return acc;
+    }, {});
+
+    const quizCounts = quizzes.reduce((acc, quiz) => {
+      if (quiz.document) {
+        acc[quiz.document] = (acc[quiz.document] || 0) + 1;
+      }
+      return acc;
+    }, {});
+
+    return filteredDocs.map(doc => ({
+      ...doc,
+      flashcardCount: flashCounts[doc._id] || 0,
+      quizSectionsCount: quizCounts[doc._id] || 0
+    }));
+  }, [filteredDocs, flashcards, quizzes]);
+
 
   const user = JSON.parse(localStorage.getItem('user')) || { email: 'you@example.com' };
-
-  useEffect(() => {
-    const fetchDocuments = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          setIsLoading(false);
-          return;
-        }
-        const [docsRes, flashRes, quizRes] = await Promise.all([
-          axiosInstance.get('/documents'),
-          axiosInstance.get('/flashcards').catch(() => ({ data: [] })),
-          axiosInstance.get('/quizzes').catch(() => ({ data: [] }))
-        ]);
-        
-        const docs = docsRes.data || [];
-        const cards = flashRes.data || [];
-        const quizzes = quizRes.data || [];
-        
-        const flashCounts = cards.reduce((acc, card) => {
-          if (card.document) {
-            acc[card.document] = (acc[card.document] || 0) + 1;
-          }
-          return acc;
-        }, {});
-
-        const quizCounts = quizzes.reduce((acc, quiz) => {
-          if (quiz.document) {
-            acc[quiz.document] = (acc[quiz.document] || 0) + 1;
-          }
-          return acc;
-        }, {});
-        
-        const enrichedDocs = docs.map(doc => ({
-          ...doc,
-          flashcardCount: flashCounts[doc._id] || 0,
-          quizSectionsCount: quizCounts[doc._id] || 0
-        }));
-        
-        setDocuments(enrichedDocs);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchDocuments();
-  }, []);
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
@@ -133,7 +110,7 @@ const DocumentListPage = () => {
       toast.success('Document uploaded successfully!');
       
       if (response.data) {
-        setDocuments(prev => [response.data, ...prev]);
+        addDocument(response.data);
       }
     } catch (error) {
       console.error('Upload failed:', error);
@@ -155,6 +132,7 @@ const DocumentListPage = () => {
         position: 'bottom-center',
         duration: 4000
       });
+      refreshData();
     } catch (error) {
       console.error('Flashcard Generation failed:', error);
       toast.error(error.response?.data?.message || 'Failed to generate flashcards.');
@@ -176,6 +154,7 @@ const DocumentListPage = () => {
       });
       
       // Redirect to the Quizzes section in the sidebar
+      refreshData();
       navigate('/quizzes');
       
     } catch (error) {
@@ -280,7 +259,7 @@ const DocumentListPage = () => {
           )}
 
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-            {filteredDocs.map((doc) => (
+            {enrichedDocs.map((doc) => (
               <div key={doc._id} className="bg-[#22222a] border border-gray-800/80 rounded-2xl p-6 shadow-sm hover:border-gray-700 transition-colors">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-4">

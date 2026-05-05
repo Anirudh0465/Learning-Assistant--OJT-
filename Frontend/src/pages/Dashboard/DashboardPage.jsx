@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import axiosInstance from '../../utiles/axiosInstance';
 import { toast } from 'react-hot-toast';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
+import { useData } from '../../context/DataContext';
 
 const DashboardPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -38,41 +39,11 @@ const DashboardPage = () => {
   const [pdfUrl, setPdfUrl] = useState(null);
   const [numPages, setNumPages] = useState(null);
 
-  const [documents, setDocuments] = useState([]);
-  const [flashcards, setFlashcards] = useState([]);
-  const [quizzes, setQuizzes] = useState([]);
-  const [isLoadingDocs, setIsLoadingDocs] = useState(true);
+  const { documents, flashcards, quizzes, isLoading, addDocument, removeDocument, removeFlashcardsByDocument, removeQuizzesByDocument } = useData();
   const [searchQuery, setSearchQuery] = useState('');
 
   // Retrieve user data to display email, fallback to example if not found
   const user = JSON.parse(localStorage.getItem('user')) || { email: 'you@example.com' };
-
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          setIsLoadingDocs(false);
-          return;
-        }
-        
-        const [docsRes, flashRes, quizRes] = await Promise.all([
-          axiosInstance.get('/documents'),
-          axiosInstance.get('/flashcards').catch(() => ({ data: [] })),
-          axiosInstance.get('/quizzes').catch(() => ({ data: [] }))
-        ]);
-        
-        setDocuments(docsRes.data);
-        setFlashcards(flashRes.data);
-        setQuizzes(quizRes.data);
-      } catch (error) {
-        console.error('Failed to fetch dashboard data:', error);
-      } finally {
-        setIsLoadingDocs(false);
-      }
-    };
-    fetchDashboardData();
-  }, []);
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
@@ -102,7 +73,7 @@ const DashboardPage = () => {
         if (response.data.fileUrl) {
           setPdfUrl(response.data.fileUrl);
         }
-        setDocuments(prev => [response.data, ...prev]);
+        addDocument(response.data);
       }
     } catch (error) {
       console.error('Upload failed:', error);
@@ -120,7 +91,9 @@ const DashboardPage = () => {
       const token = localStorage.getItem('token');
       await axiosInstance.delete(`/documents/${id}`);
       toast.success('Document deleted successfully');
-      setDocuments(prev => prev.filter(doc => doc._id !== id));
+      removeDocument(id);
+      removeFlashcardsByDocument(id);
+      removeQuizzesByDocument(id);
       if (pdfUrl && documents.find(d => d._id === id)?.fileUrl === pdfUrl) setPdfUrl(null);
     } catch (error) {
       console.error('Delete failed:', error);
@@ -250,7 +223,7 @@ const DashboardPage = () => {
             </div>
             
             <div className="flex flex-col">
-              {isLoadingDocs ? (
+              {isLoading ? (
                 <div className="px-6 py-4 text-gray-400 text-sm">Loading documents...</div>
               ) : documents.length === 0 ? (
                 <div className="px-6 py-4 text-gray-400 text-sm">No documents uploaded yet.</div>
@@ -280,7 +253,7 @@ const DashboardPage = () => {
                   </div>
                 </div>
               ))}
-              {!isLoadingDocs && documents.length > 0 && documents.filter(doc => doc.originalName.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+              {!isLoading && documents.length > 0 && documents.filter(doc => doc.originalName.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
                 <div className="px-6 py-4 text-gray-400 text-sm">No documents match your search.</div>
               )}
             </div>

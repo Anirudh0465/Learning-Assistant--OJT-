@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import axiosInstance from '../../utiles/axiosInstance';
 import { Link, useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
@@ -15,6 +15,7 @@ import {
   HelpCircle,
   MessageCircle
 } from 'lucide-react';
+import { useData } from '../../context/DataContext';
 
 const QuizListPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -28,40 +29,20 @@ const QuizListPage = () => {
     navigate('/login');
   };
 
-  const [quizzes, setQuizzes] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { quizzes: rawQuizzes, isLoading } = useData();
 
-  useEffect(() => {
-    const fetchQuizzes = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          setIsLoading(false);
-          return;
-        }
-
-        const response = await axiosInstance.get('/quizzes');
-
-        const formattedQuizzes = response.data.map(quiz => {
-          const date = new Date(quiz.createdAt);
-          return {
-            id: quiz._id,
-            title: quiz.title || 'AI Generated Quiz',
-            created: date.toLocaleDateString('en-GB') + ', ' + date.toLocaleTimeString('en-GB'),
-            questions: quiz.questionCount || 0,
-            progress: 0 
-          };
-        });
-
-        setQuizzes(formattedQuizzes);
-      } catch (error) {
-        console.error('Failed to fetch quizzes:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchQuizzes();
-  }, []);
+  const quizzes = useMemo(() => {
+    return rawQuizzes.map(quiz => {
+      const date = new Date(quiz.createdAt);
+      return {
+        id: quiz._id,
+        title: quiz.title || 'AI Generated Quiz',
+        created: date.toLocaleDateString('en-GB') + ', ' + date.toLocaleTimeString('en-GB'),
+        questions: quiz.questions?.length || quiz.questionCount || 0,
+        progress: 0 
+      };
+    });
+  }, [rawQuizzes]);
 
   return (
     <div className="min-h-screen flex bg-[#1a1a21] text-white font-sans">
